@@ -1,25 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
+import interactionPlugin from "@fullcalendar/interaction";
+
+import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [events, setEvents] = useState([] as any);
+
+  const handleDateClick = (stuff: any) => {
+    setEvents([...events, stuff]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+
+        events={events}
+        initialView="dayGridMonth"
+        dateClick={handleDateClick}
+      />
+    </main>
   );
 }
 
