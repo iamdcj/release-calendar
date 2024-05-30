@@ -43,6 +43,7 @@ function Calendar() {
         />
       </div>
       <FullCalendar
+        navLinks={true}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
           left: "prev,today,next",
