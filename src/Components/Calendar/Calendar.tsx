@@ -2,11 +2,15 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import Modal from "react-modal";
 
 import { useState } from "react";
+import EventForm from "../EventForm/EventForm";
 
 function Calendar() {
   const [weekendsVisible, setWeekendsVisible] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [tentativeEvent, setTentativeEvent] = useState(null);
   const [events, setEvents] = useState([
     {
       id: 5,
@@ -23,8 +27,14 @@ function Calendar() {
   ] as any);
 
   const handleDateClick = (event: any) => {
-    setEvents([...events, event]);
+    setTentativeEvent(event)
   };
+
+  const handleNewEvent = (event: any) => {
+    setEvents([...events, event])
+    setTentativeEvent(null)
+  };
+
 
   const toggleWeekends = (event: any) => {
     setWeekendsVisible(event.target.checked);
@@ -32,6 +42,11 @@ function Calendar() {
 
   return (
     <section>
+      <EventForm 
+        closeHandler={setTentativeEvent}
+        confirmEvent={handleNewEvent}
+        event={tentativeEvent}
+      />
       <div>
         <label htmlFor="toggle_weekends">Show Weekend(s)</label>
         <input
