@@ -27,9 +27,9 @@ const BusinessUnits = {
 } as any;
 
 const Colors = {
-  SVU: "blue",
-  PTF: "green",
-  FS: "red",
+  SVU: "#5757f8",
+  PTF: "#43adb3",
+  FS: "#f95e5e",
 } as any;
 
 interface Event {
@@ -61,6 +61,18 @@ function Calendar() {
 
   useEffect(() => {
     const events: Event[] = [
+      {
+        id: 4,
+        title: "Release 1.1.5",
+        version: "2.1.5",
+        start: "2024-05-13T22:03:15",
+        end: "2024-05-13T22:00:00",
+        release_type: "regression",
+        team: "Spark Video Unit",
+        components: "V3 Foxipedia External Importer",
+        business_units: "FoxWeather",
+        build_owner: "",
+      },
       {
         id: 5,
         title: "Release 2.1.5",
@@ -102,6 +114,7 @@ function Calendar() {
       const backgroundColor = Colors[team];
       const business_units = BusinessUnits[event.business_units];
 
+      
       return {
         ...event,
         team,
@@ -167,6 +180,7 @@ function Calendar() {
       </div> */}
       <FullCalendar
         themeSystem="bootstrap5"
+        allDaySlot={false}
         eventTimeFormat={{
           hour: "numeric",
           minute: "2-digit",
@@ -182,7 +196,7 @@ function Calendar() {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         firstDay={1}
         headerToolbar={{
-          left: "prev,next,today",
+          left: "today,prev,next",
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}

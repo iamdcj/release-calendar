@@ -1,14 +1,11 @@
 @media (prefers-color-scheme: dark) { 
-  :root {
-    --fc-today-bg-color: #0f2537;
+  :root body {
+    --fc-border-color: #777;
+    --fc-today-bg-color: #0e0721;
+
     color: #fff;
     background-color: var(--fc-today-bg-color);
   }
-}
-
-
-.fc-col-header-cell  {
-  background-color: #c20017;
 }
 
 .fc-day-sun,
@@ -22,7 +19,92 @@
 }
 
 
+.fc-button {
+  font-size: 0.85rem!important;
+}
+
+.fc .fc-button-group .fc-button-primary {
+  border: 1px solid currentColor;
+  background-color: transparent;
+  text-transform: capitalize;
+}
+
+.fc .fc-button-group  .fc-button-primary.fc-button-active {
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.fc-prev-button,
+.fc-next-button {
+  border: none!important;
+}
+
+.fc-today-button {
+  border-radius: 0.25em!important;
+  margin-right: 1rem!important;
+}
+
+.fc-timegrid-event .fc-event-main > div {
+  display: block!important;
+}
+
+.fc-event-main h5 {
+  font-weight: 800;
+}
+
+.fc-event {
+  border-radius: 0.5em!important;
+  box-shadow: unset!important;
+  border: none!important;
+}
+
 section {
   padding: 1rem 2rem;
 }
 
+.fc-direction-ltr .fc-timegrid-col-events {
+  margin: 0px 5% 0px 2px;
+}
+
+.fc .fc-toolbar {
+  justify-content: flex-start;
+}
+
+.fc-header-toolbar .fc-toolbar-chunk:nth-of-type(2) {
+  margin-left: 2rem;
+}
+
+.fc-header-toolbar .fc-toolbar-chunk:last-of-type {
+  margin-left: auto;
+}
+
+.fc-non-business {
+  background: none!important;
+}
+
+.event-content {
+  display: flex;
+  padding: 0.25rem;
+}
+
+.event-content span {
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+.fc-timegrid-body .event-content {
+  padding: 0.5rem;
+}
+
+.fc-timegrid-body .event-content h5,
+.fc-timegrid-body .event-content p,
+.fc-timegrid-body .event-content time {
+  display: block;
+  margin-bottom: 10px;
+  margin-left: 0;
+}
+
+.event-content time {
+  margin-left: 5px;
+}

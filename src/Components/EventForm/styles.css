@@ -24,7 +24,12 @@
 }
 
 form {
+  padding: 3rem;
   width: 50vw;
   height: 50vh;
+  border-radius: 0.5rem;
+  border: 1px solid var(--fc-border-color);
+  background-color: var(--fc-today-bg-color);
+  color: #fff!important;
 }
 
