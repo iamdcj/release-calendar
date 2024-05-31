@@ -108,3 +108,15 @@ section {
 .event-content time {
   margin-left: 5px;
 }
+
+.event-content.bg--svu {
+  background-color: #5757f8;
+} 
+
+.event-content.bg--ptf {
+  background-color: #43adb3;
+} 
+
+.event-content.bg--fs {
+  background-color: #f95e5e;
+} 

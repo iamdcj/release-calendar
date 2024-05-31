@@ -6,18 +6,15 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useState } from "react";
 import EventForm from "../EventForm/EventForm";
 import CalendarListing from "./CalendarEvent";
-import {
-  Backdrop,
-  CircularProgress,
-} from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const Teams = {
-  "Spark Video Unit": "SVU",
-  "Platform": "PTF",
-  "Sports": "FS",
+  "Spark Video Unit": "svu",
+  Platform: "ptf",
+  Sports: "fs",
 } as any;
 
-const BusinessUnits = {
+export const BusinessUnits = {
   FoxWeather: "FW",
   FoxBuiness: "FBN",
   FoxSports: "FS",
@@ -26,11 +23,6 @@ const BusinessUnits = {
   Outkick: "OK",
 } as any;
 
-const Colors = {
-  SVU: "#5757f8",
-  PTF: "#43adb3",
-  FS: "#f95e5e",
-} as any;
 
 interface Event {
   id: any;
@@ -39,7 +31,7 @@ interface Event {
   start: any;
   end: any;
   release_type: any;
-  team: "Spark Video Unit";
+  team: any;
   components: any;
   business_units:
     | "FoxWeather"
@@ -110,16 +102,13 @@ function Calendar() {
         build_owner: "",
       },
     ].map((event) => {
-      const team = Teams[event.team];
-      const backgroundColor = Colors[team];
+      const team = Teams[event.team] || event.team.toLowerCase();
       const business_units = BusinessUnits[event.business_units];
 
-      
       return {
         ...event,
         team,
-        business_units,
-        backgroundColor,
+        business_units
       };
     });
 
@@ -141,6 +130,9 @@ function Calendar() {
   const toggleWeekends = (event: any) => {
     setWeekendsVisible(event.target.checked);
   };
+  
+  console.log(events);
+  
 
   return (
     <section className={useDarkMode ? "is--dark-mode" : "is--light-mode"}>
@@ -163,11 +155,13 @@ function Calendar() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <EventForm
-        closeHandler={setTentativeEvent}
-        confirmEvent={handleNewEvent}
-        event={tentativeEvent}
-      />
+      {tentativeEvent && (
+        <EventForm
+          closeHandler={setTentativeEvent}
+          confirmEvent={handleNewEvent}
+          event={tentativeEvent}
+        />
+      )}
       {/* <div>
         <label htmlFor="toggle_weekends">Show Weekend(s)</label>
         <input
@@ -188,9 +182,9 @@ function Calendar() {
         }}
         slotMinTime="08:00:00"
         slotMaxTime="19:00:00"
-        businessHours= {{
-          startTime: '09:00', // a start time (10am in this example)
-          endTime: '18:00', // an end time (6pm in this example)
+        businessHours={{
+          startTime: "09:00", // a start time (10am in this example)
+          endTime: "18:00", // an end time (6pm in this example)
         }}
         navLinks={true}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
