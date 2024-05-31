@@ -55,6 +55,7 @@ function EventForm({
   return (
     <Modal
       isOpen={event}
+      onRequestClose={() => closeHandler(null)}
       contentLabel="Example Modal"
       className="modal"
       overlayClassName="wrapper"
@@ -74,105 +75,127 @@ function EventForm({
 
       <div className="content">
         <Box component="form" autoComplete="off" onSubmit={onSubmit}>
-          <h1>Schedule a release</h1>
-          <TextField
-            id="version"
-            name="version"
-            label="Fix Version"
-            variant="outlined"
-            defaultValue={event.event?.extendedProps?.version}
-            required
-          />
-          <FormControl>
-            <InputLabel id="demo-simple-select-label">Type</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="release_type"
-              name="release_type"
-              label="Release Type"
-              defaultValue={
-                event.event?.extendedProps?.release_type || "verification"
-              }
+          <Box
+            display="grid"
+            gridTemplateAreas={`
+            "version type team env"
+            "bus bus bus bus"
+            "start start end end"
+            "owners owners owners owners"
+           `}
+            gap={1}
+            mb={3}
+          >
+            <TextField
+              id="version"
+              name="version"
+              label="Fix Version"
+              variant="outlined"
+              defaultValue={event.event?.extendedProps?.version}
               required
-            >
-              <MenuItem value="verification">Verification</MenuItem>
-              <MenuItem value="uat">UAT</MenuItem>
-              <MenuItem value="regression">Regression</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="environment">Environment</InputLabel>
-            <Select
-              labelId="environment"
-              id="environment"
-              name="environment"
-              label="Environment"
-              defaultValue={event.event?.extendedProps?.environment || "stage"}
-              required
-            >
-              <MenuItem value="stage">Stage</MenuItem>
-              <MenuItem value="stage2">Stage 2</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl sx={{ m: 1, width: 300 }}>
-            <InputLabel id="businessUnits">Business Units</InputLabel>
-            <Select
-              labelId="businessUnits"
-              id="business_units"
-              name="business_units"
-              multiple
-              input={<OutlinedInput label="Name" />}
-              defaultValue={
-                event.event?.extendedProps?.business_units.split(",") || []
-              }
-              value={selectBusinessUnits}
-              onChange={(value) => handleBuChange(value)}
-              required
-            >
-              {businessUnitsArray.map((bu: string) => (
-                <MenuItem key={bu} value={bu}>
-                  {BusinessUnits[bu]}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="demo-simple-select-label">Team</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="team"
-              name="team"
-              label="Team"
-              defaultValue={event.event?.extendedProps?.team || "svu"}
-              required
-            >
-              <MenuItem value="svu">SVU</MenuItem>
-              <MenuItem value="ptf">PLATFORM</MenuItem>
-              <MenuItem value="fs">SPORTS</MenuItem>
-            </Select>
-          </FormControl>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              label="Start Date & Time"
-              name="start"
-              defaultValue={dayjs(event.event?.start || event.date)}
+              sx={{ gridArea: "version" }}
             />
-            <DateTimePicker
-              label="End Date & Time"
-              name="end"
-              defaultValue={dayjs(event.event?.end || event.date)}
+            <FormControl sx={{ gridArea: "type" }}>
+              <InputLabel id="demo-simple-select-label">Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="release_type"
+                name="release_type"
+                label="Release Type"
+                defaultValue={
+                  event.event?.extendedProps?.release_type || "verification"
+                }
+                required
+              >
+                <MenuItem value="verification">Verification</MenuItem>
+                <MenuItem value="uat">UAT</MenuItem>
+                <MenuItem value="regression">Regression</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ gridArea: "env" }}>
+              <InputLabel id="environment">Environment</InputLabel>
+              <Select
+                labelId="environment"
+                id="environment"
+                name="environment"
+                label="Environment"
+                defaultValue={
+                  event.event?.extendedProps?.environment || "stage"
+                }
+                required
+              >
+                <MenuItem value="stage">Stage</MenuItem>
+                <MenuItem value="stage2">Stage 2</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ gridArea: "bus" }}>
+              <InputLabel id="businessUnits">Business Units</InputLabel>
+              <Select
+                labelId="businessUnits"
+                id="business_units"
+                name="business_units"
+                multiple
+                input={<OutlinedInput label="Name" />}
+                defaultValue={
+                  event.event?.extendedProps?.business_units.split(",") || []
+                }
+                value={selectBusinessUnits}
+                onChange={(value) => handleBuChange(value)}
+                required
+                fullWidth
+              >
+                {businessUnitsArray.map((bu: string) => (
+                  <MenuItem key={bu} value={bu}>
+                    {BusinessUnits[bu]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{ gridArea: "team" }}>
+              <InputLabel id="demo-simple-select-label">Team</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="team"
+                name="team"
+                label="Team"
+                defaultValue={event.event?.extendedProps?.team || "svu"}
+                required
+              >
+                <MenuItem value="svu">SVU</MenuItem>
+                <MenuItem value="ptf">PLATFORM</MenuItem>
+                <MenuItem value="fs">SPORTS</MenuItem>
+              </Select>
+            </FormControl>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="Start Date & Time"
+                name="start"
+                defaultValue={dayjs(event.event?.start || event.date)}
+                sx={{ gridArea: "start" }}
+              />
+              <DateTimePicker
+                label="End Date & Time"
+                name="end"
+                defaultValue={dayjs(event.event?.end || event.date)}
+                sx={{ gridArea: "end" }}
+              />
+            </LocalizationProvider>
+            <TextField
+              id="build_owner"
+              name="build_owner"
+              label="Build Owner(s)"
+              defaultValue={event.event?.extendedProps?.build_owner}
+              sx={{ gridArea: "owners" }}
+              fullWidth
+              required
             />
-          </LocalizationProvider>
-          <TextField
-            id="build_owner"
-            name="build_owner"
-            label="Build Owner(s)"
-            defaultValue={event.event?.extendedProps?.build_owner}
-            fullWidth
-            required
-          />
+          </Box>
           <ButtonGroup
-            sx={{ width: "100%" }}
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
             variant="contained"
             aria-label="Basic button group"
           >
