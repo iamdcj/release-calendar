@@ -86,6 +86,7 @@ section {
 .event-content {
   display: flex;
   padding: 0.25rem;
+  word-break: break-word;
 }
 
 .event-content span {

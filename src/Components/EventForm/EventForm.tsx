@@ -9,6 +9,7 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
@@ -16,6 +17,8 @@ import { Close } from "@mui/icons-material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { useState } from "react";
+import { BusinessUnits } from "../Calendar/Calendar";
 
 function EventForm({
   event,
@@ -26,6 +29,9 @@ function EventForm({
   closeHandler: any;
   confirmEvent: any;
 }) {
+  const [selectBusinessUnits, setSelectBusinessUnits] = useState(
+    [] as string[]
+  );
   const onSubmit = (event: any) => {
     event.preventDefault();
     var data = new FormData(event.target);
@@ -33,9 +39,8 @@ function EventForm({
     const eventData: any = {};
 
     for (let [key, value] of data.entries()) {
-      if(key === 'start' || key === 'end') {
-        debugger
-        value = dayjs(value as string).format() 
+      if (key === "start" || key === "end") {
+        value = dayjs(value as string).format();
       }
       eventData[key] = value;
     }
@@ -43,7 +48,11 @@ function EventForm({
     confirmEvent(eventData);
   };
 
-  console.log(event);
+  const handleBuChange = (event: any) => {
+    setSelectBusinessUnits(event.target.value);
+  };
+
+  const businessUnits = ["fs", "fnc", "fbn", "fts", "fw", "otk"];
 
   return (
     <Modal
@@ -66,13 +75,15 @@ function EventForm({
       </IconButton>
 
       <div className="content">
-        <Box component="form" noValidate autoComplete="off" onSubmit={onSubmit}>
+        <Box component="form" autoComplete="off" onSubmit={onSubmit}>
           <h1>Schedule a release</h1>
           <TextField
             id="version"
             name="version"
             label="Fix Version"
             variant="outlined"
+            defaultValue={event.event?.extendedProps?.version}
+            required
           />
           <FormControl>
             <InputLabel id="demo-simple-select-label">Type</InputLabel>
@@ -81,7 +92,10 @@ function EventForm({
               id="release_type"
               name="release_type"
               label="Release Type"
-              defaultValue="verification"
+              defaultValue={
+                event.event?.extendedProps?.release_type || "verification"
+              }
+              required
             >
               <MenuItem value="verification">Verification</MenuItem>
               <MenuItem value="uat">UAT</MenuItem>
@@ -89,15 +103,37 @@ function EventForm({
             </Select>
           </FormControl>
           <FormControl>
-            <InputLabel id="demo-simple-select-label">Environment</InputLabel>
+            <InputLabel id="environment">Environment</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="environment"
+              id="environment"
+              name="environment"
               label="Environment"
-              defaultValue="stage"
+              defaultValue={event.event?.extendedProps?.environment || "stage"}
+              required
             >
               <MenuItem value="stage">Stage</MenuItem>
               <MenuItem value="stage2">Stage 2</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="businessUnits">Business Units</InputLabel>
+            <Select
+              labelId="businessUnits"
+              id="business_units"
+              name="business_units"
+              multiple
+              input={<OutlinedInput label="Name" />}
+              defaultValue={event.event?.extendedProps?.business_units || []}
+              value={selectBusinessUnits}
+              onChange={(value) => handleBuChange(value)}
+              required
+            >
+              {businessUnits.map((bu: string) => (
+                <MenuItem key={bu} value={bu}>
+                  {BusinessUnits[bu]}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <FormControl>
@@ -107,7 +143,8 @@ function EventForm({
               id="team"
               name="team"
               label="Team"
-              defaultValue="svu"
+              defaultValue={event.event?.extendedProps?.team || "svu"}
+              required
             >
               <MenuItem value="svu">SVU</MenuItem>
               <MenuItem value="ptf">PLATFORM</MenuItem>
@@ -118,19 +155,21 @@ function EventForm({
             <DateTimePicker
               label="Start Date & Time"
               name="start"
-              defaultValue={dayjs(event.date)}
+              defaultValue={dayjs(event.event?.start || event.date)}
             />
             <DateTimePicker
               label="End Date & Time"
               name="end"
-              defaultValue={dayjs(event.date)}
+              defaultValue={dayjs(event.event?.end || event.date)}
             />
           </LocalizationProvider>
           <TextField
             id="build_owner"
             name="build_owner"
             label="Build Owner(s)"
+            defaultValue={event.event?.extendedProps?.build_owner}
             fullWidth
+            required
           />
           <ButtonGroup
             sx={{ width: "100%" }}

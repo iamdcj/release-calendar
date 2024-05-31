@@ -5,7 +5,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import { useEffect, useState } from "react";
 import EventForm from "../EventForm/EventForm";
-import CalendarListing from "./CalendarEvent";
+import CalendarListing from "./CalendarListing";
 import { Backdrop, CircularProgress } from "@mui/material";
 
 const Teams = {
@@ -15,39 +15,30 @@ const Teams = {
 } as any;
 
 export const BusinessUnits = {
-  FoxWeather: "FW",
-  FoxBuiness: "FBN",
-  FoxSports: "FS",
-  FoxNews: "FNC",
-  FoxTV: "FTS",
-  Outkick: "OK",
+  fw: "Fox Weather",
+  fbn: "Fox Buiness",
+  fs: "Fox Sports",
+  fnc: "Fox News",
+  fts: "Fox TV",
+  otk: "Outkick",
 } as any;
-
 
 interface Event {
   id: any;
-  title: any;
-  version: any;
-  start: any;
-  end: any;
-  release_type: any;
-  team: any;
-  components: any;
-  business_units:
-    | "FoxWeather"
-    | "FoxBuiness"
-    | "FoxSports"
-    | "FoxNews"
-    | "FoxTV"
-    | "Outkick";
-  build_owner: any;
+  title: string;
+  version: string;
+  start: string;
+  end: string;
+  release_type: string;
+  team: string;
+  components: string;
+  business_units: string
+  build_owner: string;
 }
 
 function Calendar() {
   const [isLoading, setIsLoading] = useState(true);
-  const [useDarkMode, setUseDarkMode] = useState(true);
   const [weekendsVisible, setWeekendsVisible] = useState(false);
-  const [showEventModal, setShowEventModal] = useState(false);
   const [tentativeEvent, setTentativeEvent] = useState(null);
   const [events, setEvents] = useState([] as any);
 
@@ -62,7 +53,7 @@ function Calendar() {
         release_type: "regression",
         team: "Spark Video Unit",
         components: "V3 Foxipedia External Importer",
-        business_units: "FoxWeather",
+        business_units: "fw",
         build_owner: "",
       },
       {
@@ -74,7 +65,7 @@ function Calendar() {
         release_type: "regression",
         team: "Spark Video Unit",
         components: "V3 Foxipedia External Importer",
-        business_units: "FoxWeather",
+        business_units: "fw",
         build_owner: "",
       },
       {
@@ -86,7 +77,7 @@ function Calendar() {
         release_type: "regression",
         team: "Platform",
         components: "V3 Foxipedia External Importer",
-        business_units: "FoxWeather",
+        business_units: "fw",
         build_owner: "",
       },
       {
@@ -98,17 +89,15 @@ function Calendar() {
         release_type: "regression",
         team: "Sports",
         components: "V3 Foxipedia External Importer",
-        business_units: "FoxWeather",
+        business_units: "fw",
         build_owner: "",
       },
     ].map((event) => {
       const team = Teams[event.team] || event.team.toLowerCase();
-      const business_units = BusinessUnits[event.business_units];
 
       return {
         ...event,
-        team,
-        business_units
+        team
       };
     });
 
@@ -127,24 +116,13 @@ function Calendar() {
     setTentativeEvent(null);
   };
 
-  const toggleWeekends = (event: any) => {
-    setWeekendsVisible(event.target.checked);
+  const handleEventClick = (event: any) => {
+    setTentativeEvent(event);
   };
-  
-  console.log(events);
-  
+
 
   return (
-    <section className={useDarkMode ? "is--dark-mode" : "is--light-mode"}>
-      {/* <FormControlLabel
-        control={
-          <Switch
-            checked={useDarkMode}
-            onChange={() => setUseDarkMode(!useDarkMode)}
-          />
-        }
-        label="Dark Mode?"
-      /> */}
+    <section className="is--dark-mode">
       <Backdrop
         sx={{
           color: "#fff",
@@ -162,16 +140,6 @@ function Calendar() {
           event={tentativeEvent}
         />
       )}
-      {/* <div>
-        <label htmlFor="toggle_weekends">Show Weekend(s)</label>
-        <input
-          type="checkbox"
-          onChange={toggleWeekends}
-          name="toggle_weekends"
-          id="toggle_weekends"
-          checked={weekendsVisible}
-        />
-      </div> */}
       <FullCalendar
         themeSystem="bootstrap5"
         allDaySlot={false}
@@ -183,8 +151,8 @@ function Calendar() {
         slotMinTime="08:00:00"
         slotMaxTime="19:00:00"
         businessHours={{
-          startTime: "09:00", // a start time (10am in this example)
-          endTime: "18:00", // an end time (6pm in this example)
+          startTime: "09:00",
+          endTime: "18:00",
         }}
         navLinks={true}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -199,6 +167,7 @@ function Calendar() {
         initialView="dayGridMonth"
         dateClick={handleDateClick}
         eventContent={CalendarListing}
+        eventClick={handleEventClick}
       />
     </section>
   );
