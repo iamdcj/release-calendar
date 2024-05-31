@@ -7,38 +7,10 @@ import { useEffect, useState } from "react";
 import EventForm from "../EventForm/EventForm";
 import CalendarListing from "./CalendarListing";
 import { Backdrop, CircularProgress } from "@mui/material";
-
-const Teams = {
-  "Spark Video Unit": "svu",
-  Platform: "ptf",
-  Sports: "fs",
-} as any;
-
-export const BusinessUnits = {
-  fw: "Fox Weather",
-  fbn: "Fox Buiness",
-  fs: "Fox Sports",
-  fnc: "Fox News",
-  fts: "Fox TV",
-  otk: "Outkick",
-} as any;
-
-interface Event {
-  id: any;
-  title: string;
-  version: string;
-  start: string;
-  end: string;
-  release_type: string;
-  team: string;
-  components: string;
-  business_units: string
-  build_owner: string;
-}
+import { Event, Teams } from "../../_types";
 
 function Calendar() {
   const [isLoading, setIsLoading] = useState(true);
-  const [weekendsVisible, setWeekendsVisible] = useState(false);
   const [tentativeEvent, setTentativeEvent] = useState(null);
   const [events, setEvents] = useState([] as any);
 
@@ -162,7 +134,7 @@ function Calendar() {
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        weekends={weekendsVisible}
+        weekends={false}
         events={events}
         initialView="dayGridMonth"
         dateClick={handleDateClick}

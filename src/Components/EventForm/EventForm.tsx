@@ -18,7 +18,7 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { BusinessUnits } from "../Calendar/Calendar";
+import { BusinessUnits, businessUnitsArray } from "../../_types";
 
 function EventForm({
   event,
@@ -30,7 +30,7 @@ function EventForm({
   confirmEvent: any;
 }) {
   const [selectBusinessUnits, setSelectBusinessUnits] = useState(
-    [] as string[]
+    event.event?.extendedProps?.business_units.split(",") || ([] as string[])
   );
   const onSubmit = (event: any) => {
     event.preventDefault();
@@ -51,8 +51,6 @@ function EventForm({
   const handleBuChange = (event: any) => {
     setSelectBusinessUnits(event.target.value);
   };
-
-  const businessUnits = ["fs", "fnc", "fbn", "fts", "fw", "otk"];
 
   return (
     <Modal
@@ -124,12 +122,14 @@ function EventForm({
               name="business_units"
               multiple
               input={<OutlinedInput label="Name" />}
-              defaultValue={event.event?.extendedProps?.business_units || []}
+              defaultValue={
+                event.event?.extendedProps?.business_units.split(",") || []
+              }
               value={selectBusinessUnits}
               onChange={(value) => handleBuChange(value)}
               required
             >
-              {businessUnits.map((bu: string) => (
+              {businessUnitsArray.map((bu: string) => (
                 <MenuItem key={bu} value={bu}>
                   {BusinessUnits[bu]}
                 </MenuItem>
