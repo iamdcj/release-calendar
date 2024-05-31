@@ -1,3 +1,28 @@
-main {
-  padding: 2rem;
+@media (prefers-color-scheme: dark) { 
+  :root {
+    --fc-today-bg-color: #0f2537;
+    color: #fff;
+    background-color: var(--fc-today-bg-color);
+  }
 }
+
+
+.fc-col-header-cell  {
+  background-color: #c20017;
+}
+
+.fc-day-sun,
+.fc-day-sat {
+  background-color: rgb(217, 217, 217);
+}
+
+.fc-col-header-cell.fc-day-sat,
+.fc-col-header-cell.fc-day-sun {
+  background-color: rgb(131, 131, 131);
+}
+
+
+section {
+  padding: 1rem 2rem;
+}
+
