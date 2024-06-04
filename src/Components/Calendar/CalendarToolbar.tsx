@@ -1,93 +1,122 @@
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from "@mui/material";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { BusinessUnits, businessUnitsArray } from "../../_types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarListing from "./CalendarListing";
 import dayjs from "dayjs";
+import isToday from "dayjs/plugin/isToday";
+import { Check } from "@mui/icons-material";
 
-function CalendarToolbar({ events }: { events: any }) {
-  const [selectBusinessUnits, setSelectBusinessUnits] = useState(
-    [] as string[]
-  );
+function CalendarToolbar({
+  events,
+  handleFilter,
+}: {
+  events: any;
+  handleFilter: (key: string, value: any) => void;
+}) {
+  const [formValues, setFormValues] = useState({} as any);
+  const [todaysEvents, setTodaysEvents] = useState([]);
 
-  const handleBuChange = (event: any) => {
-    setSelectBusinessUnits(event.target.value);
+  useEffect(() => {
+    dayjs.extend(isToday);
+    const todaysEvents = events.filter((event: any) => {
+      return dayjs(event.start).isToday();
+    });
+
+    setTodaysEvents(todaysEvents);
+  }, [events]);
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    console.log(formValues);
   };
 
   return (
-    <Box component="aside" display="flex" flexDirection="column" gap={4}>
-      <Box display="flex" flexDirection="column" gap={2}>
+    <Box
+      className="calendar-toolbar"
+      component="aside"
+      display="flex"
+      flexDirection="column"
+      gap={4}
+    >
+      <Box
+        display="flex"
+        flexDirection="column"
+        border="none"
+        width="100%"
+        gap={2}
+        component="form"
+        onSubmit={handleSubmit}
+      >
         <h3>Filters</h3>
-        <FormControl sx={{ gridArea: "type" }} fullWidth>
-          <InputLabel id="demo-simple-select-label">Release Type</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="release_type"
-            name="release_type"
-            label="Release Type"
-            required
-            fullWidth
-          >
-            <MenuItem value="verification">Verification</MenuItem>
-            <MenuItem value="uat">UAT</MenuItem>
-            <MenuItem value="regression">Regression</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ gridArea: "type" }} fullWidth>
-          <InputLabel id="demo-simple-select-label">Components</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="release_type"
-            name="release_type"
-            label="Release Type"
-            required
-          >
-            <MenuItem value="verification">Verification</MenuItem>
-            <MenuItem value="uat">UAT</MenuItem>
-            <MenuItem value="regression">Regression</MenuItem>
-            <MenuItem value="regression">Production</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ gridArea: "team" }} fullWidth>
-          <InputLabel id="demo-simple-select-label">Team</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="team"
-            name="team"
-            label="Team"
-            required
-          >
-            <MenuItem value="spark video unit">SVU</MenuItem>
-            <MenuItem value="platform">PLATFORM</MenuItem>
-            <MenuItem value="sports">SPORTS</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ gridArea: "bus" }} fullWidth>
-          <InputLabel id="businessUnits">Business Units</InputLabel>
-          <Select
-            labelId="businessUnits"
-            id="business_units"
-            name="business_units"
-            multiple
-            input={<OutlinedInput label="Name" />}
-            value={selectBusinessUnits}
-            onChange={(value) => handleBuChange(value)}
-            required
-            fullWidth
-          >
-            {businessUnitsArray.map((bu: string) => (
-              <MenuItem key={bu} value={bu}>
-                {BusinessUnits[bu]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Autocomplete
+          fullWidth
+          multiple
+          id="business_units"
+          options={businessUnitsArray}
+          onChange={(element, values) => {
+            setFormValues({ ...formValues, business_unit: values });
+          }}
+          getOptionLabel={(option) => BusinessUnits[option]}
+          value={formValues["business_units"]}
+          sx={{ gridArea: "bus" }}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                name="business_units"
+                variant="outlined"
+                label="Business Units"
+                fullWidth
+              />
+            );
+          }}
+        />
+        <Autocomplete
+          fullWidth
+          multiple
+          id="components"
+          options={["fe", "cms"]}
+          onChange={(element, values) => {
+            setFormValues({ ...formValues, components: values });
+          }}
+          value={formValues["components"]}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                name="components"
+                variant="outlined"
+                label="Components"
+                fullWidth
+              />
+            );
+          }}
+        />
+        <Autocomplete
+          fullWidth
+          multiple
+          id="team"
+          options={["svu", "sports", "platform"]}
+          onChange={(element, values) => {
+            setFormValues({ ...formValues, team: values });
+          }}
+          value={formValues["team"]}
+          sx={{ gridArea: "bus" }}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                name="team"
+                variant="outlined"
+                label="team"
+                fullWidth
+              />
+            );
+          }}
+        />
+        <Button type="submit" variant="contained" color="success">
+          Apply Filters <Check />
+        </Button>
       </Box>
       {events.length > 0 && (
         <Box
@@ -97,8 +126,8 @@ function CalendarToolbar({ events }: { events: any }) {
           gap={3}
           borderTop="1px solid white"
         >
-          <h3>Upcoming Releases</h3>
-          {events
+          <h3>Today's Releases</h3>
+          {todaysEvents
             .sort((eventA: any, eventB: any) => {
               const startA: any = dayjs(eventA.start);
               const startB: any = dayjs(eventB.start);
@@ -106,7 +135,7 @@ function CalendarToolbar({ events }: { events: any }) {
               return startA - startB;
             })
             .map((event: any) => (
-              <CalendarListing key={event.id} {...event} isToday />
+              <CalendarListing key={event.id} event={event} isToday />
             ))}
         </Box>
       )}

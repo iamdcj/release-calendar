@@ -1,12 +1,4 @@
-@media (prefers-color-scheme: dark) {
-  :root body {
-    --fc-border-color: #777;
-    --fc-today-bg-color: #0e0721;
 
-    color: #fff;
-    background-color: var(--fc-today-bg-color);
-  }
-}
 
 .fc-button {
   font-size: 0.85rem !important;
