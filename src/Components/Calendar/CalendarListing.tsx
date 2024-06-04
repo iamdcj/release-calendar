@@ -12,15 +12,10 @@ function CalendarListing(event: any) {
   if (!event) {
     return null;
   }
-
   
-
+  
   const time = event.timeText || generateFriendlyTime(event.start, event.end);
   const teamCode = event.team || event?.event?.extendedProps?.team;
-  const team = codeToName[teamCode];
-
-  console.log(teamCode);
-  
   const releaseType =
     event.release_type || event?.event?.extendedProps?.release_type;
   const businessUnits =
@@ -30,8 +25,7 @@ function CalendarListing(event: any) {
   return (
     <div className={`event-content bg--${nameToCode[teamCode]}`}>
       <h5>
-        <span>{team}</span>
-        <span>{releaseType}</span>
+        <span>{teamCode} {releaseType}</span>
         {businessUnits && <> on {businessUnits.toUpperCase()}</>}
       </h5>
       <time>- {time}</time>

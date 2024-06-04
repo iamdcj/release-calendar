@@ -1,15 +1,13 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-
 import Modal from "react-modal";
 import "./styles.css";
 import Button from "@mui/material/Button";
 import {
+  Autocomplete,
   Box,
   FormControl,
   IconButton,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
@@ -33,9 +31,10 @@ function EventForm({
   closeHandler: any;
   confirmEvent: any;
 }) {
-  const [selectBusinessUnits, setSelectBusinessUnits] = useState(
+  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
     event.event?.extendedProps?.business_units.split(",") || ([] as string[])
   );
+
   const onSubmit = (event: any) => {
     event.preventDefault();
     var data = new FormData(event.target);
@@ -46,14 +45,17 @@ function EventForm({
       if (key === "start" || key === "end") {
         value = dayjs(value as string).format();
       }
+
+      if (key === "business_units") {
+        value = selectedBusinessUnits.join(',')
+      }
+
       eventData[key] = value;
     }
 
-    confirmEvent(eventData);
-  };
+    console.log(eventData);
 
-  const handleBuChange = (event: any) => {
-    setSelectBusinessUnits(event.target.value);
+    confirmEvent(eventData);
   };
 
   return (
@@ -106,6 +108,38 @@ function EventForm({
             gap={3}
             mb={3}
           >
+            <Autocomplete
+              fullWidth
+              multiple
+              id="business_units"
+              options={businessUnitsArray}
+              onChange={(_, values) => {
+                console.log(values);
+                
+                setSelectedBusinessUnits(values);
+              }}
+              getOptionLabel={(option) => BusinessUnits[option]}
+              value={selectedBusinessUnits}
+              defaultValue={selectedBusinessUnits}
+              sx={{ gridArea: "bus" }}
+              renderInput={(params) => {
+                console.log(params);
+
+
+                return (
+                  <TextField
+                    {...params}
+                    value={selectedBusinessUnits}
+                    name="business_units"
+                    variant="outlined"
+                    label="Business Units"
+                    required={!selectedBusinessUnits.length}
+                    fullWidth
+                  />
+                );
+              }}
+            />
+
             <TextField
               id="version"
               name="version"
@@ -116,19 +150,19 @@ function EventForm({
               sx={{ gridArea: "version" }}
               fullWidth
             />
-              <FormControl sx={{ gridArea: "team" }}>
+            <FormControl sx={{ gridArea: "team" }}>
               <InputLabel id="demo-simple-select-label">Team</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="team"
                 name="team"
                 label="Team"
-                defaultValue={event.event?.extendedProps?.team || "svu"}
+                defaultValue={event.event?.extendedProps?.team || "spark video unit"}
                 required
               >
-                <MenuItem value="svu">SVU</MenuItem>
-                <MenuItem value="ptf">PLATFORM</MenuItem>
-                <MenuItem value="fs">SPORTS</MenuItem>
+                <MenuItem value="spark video unit">Spark Video Unit</MenuItem>
+                <MenuItem value="platform">Platform</MenuItem>
+                <MenuItem value="sports">Sports</MenuItem>
               </Select>
             </FormControl>
             <FormControl sx={{ gridArea: "type" }} fullWidth>
@@ -163,29 +197,6 @@ function EventForm({
               >
                 <MenuItem value="stage">Stage</MenuItem>
                 <MenuItem value="stage2">Stage 2</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ gridArea: "bus" }}>
-              <InputLabel id="businessUnits">Business Units</InputLabel>
-              <Select
-                labelId="businessUnits"
-                id="business_units"
-                name="business_units"
-                multiple
-                input={<OutlinedInput label="Name" />}
-                defaultValue={
-                  event.event?.extendedProps?.business_units.split(",") || []
-                }
-                value={selectBusinessUnits}
-                onChange={(value) => handleBuChange(value)}
-                required
-                fullWidth
-              >
-                {businessUnitsArray.map((bu: string) => (
-                  <MenuItem key={bu} value={bu}>
-                    {BusinessUnits[bu]}
-                  </MenuItem>
-                ))}
               </Select>
             </FormControl>
             <TextField
