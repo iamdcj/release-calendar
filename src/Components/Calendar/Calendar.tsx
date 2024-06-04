@@ -6,34 +6,25 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useState } from "react";
 import EventForm from "../EventForm/EventForm";
 import CalendarListing from "./CalendarListing";
-import { Backdrop, CircularProgress } from "@mui/material";
-import { Event, Teams } from "../../_types";
+import { Backdrop, Box, CircularProgress } from "@mui/material";
+import { Event, nameToCode } from "../../_types";
+import CalendarToolbar from "./CalendarToolbar";
+
+import './styles.css'
 
 function Calendar() {
   const [isLoading, setIsLoading] = useState(true);
   const [tentativeEvent, setTentativeEvent] = useState(null);
   const [events, setEvents] = useState([] as any);
 
-  useEffect(() => {
+  const fetchEvents = () => {
     const events: Event[] = [
       {
         id: 4,
         title: "Release 1.1.5",
         version: "2.1.5",
-        start: "2024-05-13T22:03:15",
-        end: "2024-05-13T22:00:00",
-        release_type: "regression",
-        team: "Spark Video Unit",
-        components: "V3 Foxipedia External Importer",
-        business_units: "fw",
-        build_owner: "",
-      },
-      {
-        id: 5,
-        title: "Release 2.1.5",
-        version: "2.1.5",
-        start: "2024-05-10T22:03:15",
-        end: "2024-05-22T22:00:00",
+        start: "2024-06-03T22:03:15",
+        end: "2024-06-03T22:00:00",
         release_type: "regression",
         team: "Spark Video Unit",
         components: "V3 Foxipedia External Importer",
@@ -44,8 +35,8 @@ function Calendar() {
         id: 8,
         title: "Release 2.1.9",
         version: "2.1.9",
-        start: "2024-05-16T13:03:15",
-        end: "2024-05-23T22:00:00",
+        start: "2024-06-05T13:03:15",
+        end: "2024-06-05T22:00:00",
         release_type: "regression",
         team: "Platform",
         components: "V3 Foxipedia External Importer",
@@ -53,11 +44,24 @@ function Calendar() {
         build_owner: "",
       },
       {
+        id: 5,
+        title: "Release 2.1.5",
+        version: "2.1.5",
+        start: "2024-06-04T22:03:15",
+        end: "2024-06-04T05:00:00",
+        release_type: "regression",
+        team: "Spark Video Unit",
+        components: "V3 Foxipedia External Importer",
+        business_units: "fw",
+        build_owner: "",
+      },
+
+      {
         id: 7,
         title: "Release 2.1.1",
         version: "2.1.1",
-        start: "2024-05-22T11:03:15",
-        end: "2024-05-30T22:00:00",
+        start: "2024-06-05T11:03:15",
+        end: "2024-06-06T22:00:00",
         release_type: "regression",
         team: "Sports",
         components: "V3 Foxipedia External Importer",
@@ -65,18 +69,22 @@ function Calendar() {
         build_owner: "",
       },
     ].map((event) => {
-      const team = Teams[event.team] || event.team.toLowerCase();
+      const team = nameToCode[event.team] || event.team.toLowerCase();
 
       return {
         ...event,
-        team
+        team,
       };
     });
 
     setTimeout(() => {
       setEvents(events);
       setIsLoading(false);
-    }, 3000);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    fetchEvents();
   }, []);
 
   const handleDateClick = (event: any) => {
@@ -92,19 +100,27 @@ function Calendar() {
     setTentativeEvent(event);
   };
 
-
   return (
-    <section className="is--dark-mode">
-      <Backdrop
-        sx={{
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.75)",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+    <Box
+      component="section"
+      className="is--dark-mode"
+      display="grid"
+      gridTemplateColumns="25% 75%"
+      columnGap={3}
+    >
+      <CalendarToolbar events={events} />
+      {isLoading && (
+        <Backdrop
+          sx={{
+            color: "#fff",
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       {tentativeEvent && (
         <EventForm
           closeHandler={setTentativeEvent}
@@ -132,16 +148,16 @@ function Calendar() {
         headerToolbar={{
           left: "today,prev,next",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
+          right: "timeGridWeek,dayGridMonth,timeGridDay",
         }}
         weekends={false}
         events={events}
-        initialView="dayGridMonth"
+        initialView="timeGridWeek"
         dateClick={handleDateClick}
         eventContent={CalendarListing}
         eventClick={handleEventClick}
       />
-    </section>
+    </Box>
   );
 }
 

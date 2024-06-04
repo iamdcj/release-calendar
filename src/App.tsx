@@ -1,19 +1,21 @@
-import { ThemeProvider, createTheme } from "@mui/material";
+import { useState } from "react";
+import { PaletteMode, ThemeProvider, createTheme } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import "./App.css";
 import Calendar from "./Components/Calendar/Calendar";
 
 function App() {
-  const theme = createTheme({
+  const [theme, setTheme] = useState('dark' as PaletteMode);
+
+  const appTheme = createTheme({
     palette: {
-      mode: "dark",
+      mode: theme,
     },
   });
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={appTheme}>
       <CssBaseline />
-      <main>
+      <main className={`is--${theme}-theme`}>
         <Calendar />
       </main>
     </ThemeProvider>

@@ -1,10 +1,10 @@
+import { useForm, SubmitHandler } from "react-hook-form";
+
 import Modal from "react-modal";
 import "./styles.css";
 import Button from "@mui/material/Button";
-import SaveIcon from "@mui/icons-material/Save";
 import {
   Box,
-  ButtonGroup,
   FormControl,
   IconButton,
   InputLabel,
@@ -13,8 +13,12 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Close } from "@mui/icons-material";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { Check, Close } from "@mui/icons-material";
+import {
+  CalendarIcon,
+  DateTimePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -76,14 +80,30 @@ function EventForm({
       <div className="content">
         <Box component="form" autoComplete="off" onSubmit={onSubmit}>
           <Box
+            component="h2"
+            mb={4}
+            px={2}
+            py={1}
+            display="flex"
+            alignItems="center"
+            bgcolor="#f44336"
+            borderRadius={1}
+          >
+            <CalendarIcon /> Schedule a release
+          </Box>
+          <Box
+            padding={2}
             display="grid"
             gridTemplateAreas={`
-            "version type team env"
-            "bus bus bus bus"
-            "start start end end"
-            "owners owners owners owners"
+            "version version"
+            "env env"
+            "type type"
+            "team team"
+            "bus bus"
+            "start end"
+            "owners owners"
            `}
-            gap={1}
+            gap={3}
             mb={3}
           >
             <TextField
@@ -94,8 +114,24 @@ function EventForm({
               defaultValue={event.event?.extendedProps?.version}
               required
               sx={{ gridArea: "version" }}
+              fullWidth
             />
-            <FormControl sx={{ gridArea: "type" }}>
+              <FormControl sx={{ gridArea: "team" }}>
+              <InputLabel id="demo-simple-select-label">Team</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="team"
+                name="team"
+                label="Team"
+                defaultValue={event.event?.extendedProps?.team || "svu"}
+                required
+              >
+                <MenuItem value="svu">SVU</MenuItem>
+                <MenuItem value="ptf">PLATFORM</MenuItem>
+                <MenuItem value="fs">SPORTS</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ gridArea: "type" }} fullWidth>
               <InputLabel id="demo-simple-select-label">Type</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -110,6 +146,7 @@ function EventForm({
                 <MenuItem value="verification">Verification</MenuItem>
                 <MenuItem value="uat">UAT</MenuItem>
                 <MenuItem value="regression">Regression</MenuItem>
+                <MenuItem value="regression">Production</MenuItem>
               </Select>
             </FormControl>
             <FormControl sx={{ gridArea: "env" }}>
@@ -151,21 +188,15 @@ function EventForm({
                 ))}
               </Select>
             </FormControl>
-            <FormControl sx={{ gridArea: "team" }}>
-              <InputLabel id="demo-simple-select-label">Team</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="team"
-                name="team"
-                label="Team"
-                defaultValue={event.event?.extendedProps?.team || "svu"}
-                required
-              >
-                <MenuItem value="svu">SVU</MenuItem>
-                <MenuItem value="ptf">PLATFORM</MenuItem>
-                <MenuItem value="fs">SPORTS</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              id="build_owner"
+              name="build_owner"
+              label="Build Owner(s)"
+              defaultValue={event.event?.extendedProps?.build_owner}
+              sx={{ gridArea: "owners" }}
+              fullWidth
+              required
+            />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 label="Start Date & Time"
@@ -180,33 +211,27 @@ function EventForm({
                 sx={{ gridArea: "end" }}
               />
             </LocalizationProvider>
-            <TextField
-              id="build_owner"
-              name="build_owner"
-              label="Build Owner(s)"
-              defaultValue={event.event?.extendedProps?.build_owner}
-              sx={{ gridArea: "owners" }}
-              fullWidth
-              required
-            />
           </Box>
-          <ButtonGroup
+          <Box
+            px={2}
+            pb={4}
             sx={{
               display: "flex",
               width: "100%",
               justifyContent: "space-between",
             }}
-            variant="contained"
-            aria-label="Basic button group"
           >
-            <Button color="error" onClick={() => closeHandler(null)}>
-              Cancel
+            <Button
+              color="error"
+              variant="outlined"
+              onClick={() => closeHandler(null)}
+            >
+              <Close /> Cancel
             </Button>
-            <Button type="submit">
-              <SaveIcon />
-              Schedule Release
+            <Button type="submit" variant="outlined">
+              Confirm <Check />
             </Button>
-          </ButtonGroup>
+          </Box>
         </Box>
       </div>
     </Modal>

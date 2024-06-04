@@ -1,4 +1,4 @@
-@media (prefers-color-scheme: dark) { 
+@media (prefers-color-scheme: dark) {
   :root body {
     --fc-border-color: #777;
     --fc-today-bg-color: #0e0721;
@@ -8,45 +8,22 @@
   }
 }
 
-.fc-day-sun,
-.fc-day-sat {
-  background-color: rgb(217, 217, 217);
-}
-
-.fc-col-header-cell.fc-day-sat,
-.fc-col-header-cell.fc-day-sun {
-  background-color: rgb(131, 131, 131);
-}
-
-
 .fc-button {
-  font-size: 0.85rem!important;
-}
-
-.fc .fc-button-group .fc-button-primary {
-  border: 1px solid currentColor;
-  background-color: transparent;
-  text-transform: capitalize;
-}
-
-.fc .fc-button-group  .fc-button-primary.fc-button-active {
-  background-color: #fff;
-  border-color: #fff;
-  color: #000;
+  font-size: 0.85rem !important;
 }
 
 .fc-prev-button,
 .fc-next-button {
-  border: none!important;
+  border: none !important;
 }
 
 .fc-today-button {
-  border-radius: 0.25em!important;
-  margin-right: 1rem!important;
+  border-radius: 0.25em !important;
+  margin-right: 1rem !important;
 }
 
 .fc-timegrid-event .fc-event-main > div {
-  display: block!important;
+  display: block !important;
 }
 
 .fc-event-main h5 {
@@ -54,9 +31,9 @@
 }
 
 .fc-event {
-  border-radius: 0.5em!important;
-  box-shadow: unset!important;
-  border: none!important;
+  border-radius: 0.5em !important;
+  box-shadow: unset !important;
+  border: none !important;
 }
 
 section {
@@ -80,7 +57,7 @@ section {
 }
 
 .fc-non-business {
-  background: none!important;
+  background: none !important;
 }
 
 .event-content {
@@ -110,14 +87,26 @@ section {
   margin-left: 5px;
 }
 
-.event-content.bg--svu {
+.bg--svu {
   background-color: #5757f8;
-} 
+}
 
-.event-content.bg--ptf {
+.bg--ptf {
   background-color: #43adb3;
-} 
+}
 
-.event-content.bg--fs {
+.bg--fs {
   background-color: #f95e5e;
-} 
+}
+
+.is--dark-theme .fc .fc-button-group .fc-button-primary {
+  border: 1px solid currentColor;
+  background-color: transparent;
+  text-transform: capitalize;
+}
+
+.is--dark-theme .fc .fc-button-group .fc-button-primary.fc-button-active {
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
+}
