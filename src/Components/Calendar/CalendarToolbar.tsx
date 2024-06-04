@@ -118,16 +118,17 @@ function CalendarToolbar({
           Apply Filters <Check />
         </Button>
       </Box>
-      {events.length > 0 && (
-        <Box
-          display="flex"
-          flexDirection="column"
-          paddingTop={4}
-          gap={3}
-          borderTop="1px solid white"
-        >
-          <h3>Today's Releases</h3>
-          {todaysEvents
+
+      <Box
+        display="flex"
+        flexDirection="column"
+        paddingTop={4}
+        gap={3}
+        borderTop="1px solid white"
+      >
+        <h3>Today's Releases</h3>
+        {todaysEvents.length > 0 ? (
+          todaysEvents
             .sort((eventA: any, eventB: any) => {
               const startA: any = dayjs(eventA.start);
               const startB: any = dayjs(eventB.start);
@@ -136,9 +137,11 @@ function CalendarToolbar({
             })
             .map((event: any) => (
               <CalendarListing key={event.id} event={event} isToday />
-            ))}
-        </Box>
-      )}
+            ))
+        ) : (
+          <p>There are no release scheduled for today</p>
+        )}
+      </Box>
     </Box>
   );
 }
