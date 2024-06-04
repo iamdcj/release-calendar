@@ -10,6 +10,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  useTheme,
 } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import {
@@ -31,6 +32,7 @@ function EventForm({
   closeHandler: any;
   confirmEvent: any;
 }) {
+  const isDarkTheme = useTheme().palette.mode === "dark";
   const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
     event.event?.extendedProps?.business_units.split(",") || ([] as string[])
   );
@@ -47,7 +49,7 @@ function EventForm({
       }
 
       if (key === "business_units") {
-        value = selectedBusinessUnits.join(',')
+        value = selectedBusinessUnits.join(",");
       }
 
       eventData[key] = value;
@@ -80,18 +82,26 @@ function EventForm({
       </IconButton>
 
       <div className="content">
-        <Box component="form" autoComplete="off" onSubmit={onSubmit}>
+        <Box
+          component="form"
+          autoComplete="off"
+          onSubmit={onSubmit}
+          bgcolor={isDarkTheme ? "#000" : "#fff"}
+          border={isDarkTheme ? "1px solid grey" : 'none'}
+          borderRadius="10px"
+        >
           <Box
             component="h2"
-            mb={4}
+            mb={2}
             px={2}
-            py={1}
+            py={2}
             display="flex"
             alignItems="center"
-            bgcolor="#f44336"
-            borderRadius={1}
+            bgcolor="#007A33" // let's go celtics!
+            borderRadius="10px 10px 0 0"
+            color="#fff"
           >
-            <CalendarIcon /> Schedule a release
+            <CalendarIcon sx={{ mr: 1 }} /> Schedule a release
           </Box>
           <Box
             padding={2}
@@ -115,7 +125,7 @@ function EventForm({
               options={businessUnitsArray}
               onChange={(_, values) => {
                 console.log(values);
-                
+
                 setSelectedBusinessUnits(values);
               }}
               getOptionLabel={(option) => BusinessUnits[option]}
@@ -124,7 +134,6 @@ function EventForm({
               sx={{ gridArea: "bus" }}
               renderInput={(params) => {
                 console.log(params);
-
 
                 return (
                   <TextField
@@ -157,7 +166,9 @@ function EventForm({
                 id="team"
                 name="team"
                 label="Team"
-                defaultValue={event.event?.extendedProps?.team || "spark video unit"}
+                defaultValue={
+                  event.event?.extendedProps?.team || "spark video unit"
+                }
                 required
               >
                 <MenuItem value="spark video unit">Spark Video Unit</MenuItem>
