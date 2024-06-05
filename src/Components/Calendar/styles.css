@@ -28,10 +28,6 @@
   border: none !important;
 }
 
-section {
-  padding: 1rem 2rem;
-}
-
 .fc-direction-ltr .fc-timegrid-col-events {
   margin: 0px 5% 0px 2px;
 }

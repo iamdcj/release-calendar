@@ -1,18 +1,18 @@
 import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { BusinessUnits, businessUnitsArray } from "../../_types";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CalendarListing from "./CalendarListing";
 import dayjs from "dayjs";
 import isToday from "dayjs/plugin/isToday";
 import { Check } from "@mui/icons-material";
+import AppContext from "../../store";
 
 function CalendarToolbar({
-  events,
   handleFilter,
 }: {
-  events: any;
   handleFilter: (key: string, value: any) => void;
 }) {
+  const { showSidebar, events } = useContext(AppContext);
   const [formValues, setFormValues] = useState({} as any);
   const [todaysEvents, setTodaysEvents] = useState([]);
 
@@ -34,9 +34,20 @@ function CalendarToolbar({
     <Box
       className="calendar-toolbar"
       component="aside"
-      display="flex"
       flexDirection="column"
+      display="flex"
+      position={showSidebar ? "relative" : "absolute"}
+      sx={
+        showSidebar
+          ? null
+          : {
+              transform: "translateX(-100%)",
+            }
+      }
       gap={4}
+      py={1}
+      px={3}
+      borderRight="1px solid grey"
     >
       <Box
         display="flex"

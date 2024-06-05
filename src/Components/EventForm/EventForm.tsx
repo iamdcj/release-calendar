@@ -32,10 +32,15 @@ function EventForm({
   closeHandler: any;
   confirmEvent: any;
 }) {
+
   const isDarkTheme = useTheme().palette.mode === "dark";
   const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
-    event.event?.extendedProps?.business_units.split(",") || ([] as string[])
+    event?.event?.extendedProps?.business_units.split(",") || ([] as string[])
   );
+
+  if (!event) {
+    return null;
+  }
 
   const onSubmit = (event: any) => {
     event.preventDefault();
@@ -54,8 +59,6 @@ function EventForm({
 
       eventData[key] = value;
     }
-
-    console.log(eventData);
 
     confirmEvent(eventData);
   };
@@ -87,14 +90,14 @@ function EventForm({
           autoComplete="off"
           onSubmit={onSubmit}
           bgcolor={isDarkTheme ? "#000" : "#fff"}
-          border={isDarkTheme ? "1px solid grey" : 'none'}
+          border={isDarkTheme ? "1px solid grey" : "none"}
           borderRadius="10px"
         >
           <Box
             component="h2"
-            mb={2}
-            px={2}
-            py={2}
+            mb={1}
+            px={1}
+            py={1}
             display="flex"
             alignItems="center"
             bgcolor="#007A33" // let's go celtics!
@@ -104,7 +107,7 @@ function EventForm({
             <CalendarIcon sx={{ mr: 1 }} /> Schedule a release
           </Box>
           <Box
-            padding={2}
+            padding={1}
             display="grid"
             gridTemplateAreas={`
             "version version"
@@ -115,8 +118,8 @@ function EventForm({
             "start end"
             "owners owners"
            `}
-            gap={3}
-            mb={3}
+            gap={1}
+            mb={1}
           >
             <Autocomplete
               fullWidth
@@ -235,8 +238,8 @@ function EventForm({
             </LocalizationProvider>
           </Box>
           <Box
-            px={2}
-            pb={4}
+            px={1}
+            pb={2}
             sx={{
               display: "flex",
               width: "100%",
