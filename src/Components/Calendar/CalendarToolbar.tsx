@@ -152,7 +152,7 @@ function CalendarToolbar() {
         display="flex"
         flexDirection="column"
         paddingTop={4}
-        gap={3}
+        gap={2}
         borderTop="1px solid white"
       >
         <h3>Today's Releases</h3>
@@ -165,7 +165,9 @@ function CalendarToolbar() {
               return startA - startB;
             })
             .map((event: any) => (
-              <CalendarListing key={event.id} event={event} isToday />
+              <button onClick={() => dispatch({ type: 'SET_ACTIVE_EVENT', value: event})}>
+                <CalendarListing key={event.id} event={event} isToday />
+              </button>
             ))
         ) : (
           <p>There are no release scheduled for today</p>

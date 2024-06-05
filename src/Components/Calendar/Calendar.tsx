@@ -113,7 +113,7 @@ function Calendar() {
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             firstDay={1}
             eventClassNames={(event) => [
-              `bg${nameToCode[event.event.extendedProps.team]}`,
+              `bg--${nameToCode[event.event.extendedProps.team]}`,
             ]}
             headerToolbar={{
               left: "today,prev,next",
@@ -124,8 +124,13 @@ function Calendar() {
             weekends={false}
             events={events}
             initialView="timeGridWeek"
-            dateClick={(event) => dispatch({ type: "SET_TENTATIVE_EVENT", value: event })}
+            dateClick={(event) =>
+              dispatch({ type: "SET_TENTATIVE_EVENT", value: event })
+            }
             eventContent={CalendarListing}
+            datesSet={(currentView) =>
+              dispatch({ type: "SET_VIEW", value: currentView?.view?.type })
+            }
             eventClick={(event) =>
               dispatch({ type: "SET_ACTIVE_EVENT", value: event })
             }

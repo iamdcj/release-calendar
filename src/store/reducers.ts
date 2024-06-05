@@ -1,5 +1,4 @@
 export const reducer = (state: any, action: any) => {
-  debugger;
   switch (action.type) {
     case "SHOW_SIDEBAR":
       return {
@@ -35,6 +34,11 @@ export const reducer = (state: any, action: any) => {
         ...state,
         release: null,
       };
+      case "SET_VIEW":
+        return {
+          ...state,
+          currentView: action.value,
+        };
     case "SET_LOADING":
       return {
         ...state,

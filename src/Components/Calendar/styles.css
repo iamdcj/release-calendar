@@ -1,6 +1,7 @@
 
 
 .fc-button {
+  text-transform: capitalize!important;
   font-size: 0.85rem !important;
 }
 
@@ -51,7 +52,7 @@
 .event-content {
   display: flex;
   padding: 0.25rem;
-  word-break: break-word;
+  color: #fff;
 }
 
 .event-content span {

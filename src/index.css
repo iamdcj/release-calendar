@@ -7,3 +7,10 @@ h1 {
   font-size: 1.25rem;
   line-height: 1;
 }
+
+button {
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+}

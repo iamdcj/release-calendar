@@ -8,7 +8,8 @@ interface State {
   showSidebar: boolean;
   isLoading: boolean;
   theme: PaletteMode;
-  release: null | Event
+  release: null | Event;
+  currentView: string;
 }
 
 const initialState: State = {
@@ -16,7 +17,8 @@ const initialState: State = {
   showSidebar: true,
   isLoading: false,
   theme: "light",
-  release: null
+  release: null,
+  currentView: "timeGridWeek",
 };
 
 const AppContext = createContext<any>(null);

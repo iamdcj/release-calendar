@@ -27,11 +27,28 @@ import { v4 as uuidv4 } from "uuid";
 function EventForm() {
   const { events, release, theme, dispatch } = useAppContext();
   const isDarkTheme = theme === "dark";
-  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState([] as string[]);
+  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
+    [] as string[]
+  );
+
+  const businessUnits = release?.business_units || release?.event?.extendedProps?.business_units
+  const version = release?.version || release?.event?.extendedProps?.version
+  const team = release?.team || release?.event?.extendedProps?.team
+  const releaseType = release?.release_type || release?.event?.extendedProps?.release_type
+  const environment = release?.environment || release?.event?.extendedProps?.environment
+  const buildOwners = release?.build_owners || release?.event?.extendedProps?.build_owners
+  const start = release?.start || release?.event?.start
+  const end = release?.end || release?.event?.end
+
+  debugger
 
   useEffect(() => {
+    if(!businessUnits) {
+      return;
+    }
+
     setSelectedBusinessUnits(
-      release?.event?.extendedProps?.business_units.split(",")
+      businessUnits.split(",")
     );
   }, []);
 
@@ -41,20 +58,23 @@ function EventForm() {
 
   const onSubmit = (event: any) => {
     event.preventDefault();
-    var data = new FormData(event.target);
 
+    const data = new FormData(event.target);
     const eventData: any = {};
 
     for (let [key, value] of data.entries()) {
-      if (key === "start" || key === "end") {
-        value = dayjs(value as string).format();
+      switch (key) {
+        case "start":
+        case "end":
+          eventData[key] = value = dayjs(value as string).format();
+          break;
+        case "business_units":
+          eventData[key] = value = selectedBusinessUnits.join(",");
+          break;
+        default:
+          eventData[key] = value;
+          break;
       }
-
-      if (key === "business_units") {
-        value = selectedBusinessUnits.join(",");
-      }
-
-      eventData[key] = value;
     }
 
     dispatch({
@@ -63,16 +83,17 @@ function EventForm() {
         ...events,
         {
           id: uuidv4(),
-         ...eventData,
+          ...eventData,
         },
       ],
     });
+
     setSelectedBusinessUnits([]);
   };
 
   const closeHandler = () => {
     dispatch({ type: "CLEAR_EVENT" });
-  }
+  };
 
   return (
     <Modal
@@ -141,12 +162,9 @@ function EventForm() {
                 setSelectedBusinessUnits(values);
               }}
               getOptionLabel={(option) => BusinessUnits[option]}
-              value={selectedBusinessUnits}
               defaultValue={selectedBusinessUnits}
               sx={{ gridArea: "bus" }}
               renderInput={(params) => {
-                console.log(params);
-
                 return (
                   <TextField
                     {...params}
@@ -160,13 +178,12 @@ function EventForm() {
                 );
               }}
             />
-
             <TextField
               id="version"
               name="version"
               label="Fix Version"
               variant="outlined"
-              defaultValue={release.event?.extendedProps?.version}
+              defaultValue={version}
               required
               sx={{ gridArea: "version" }}
               fullWidth
@@ -179,7 +196,7 @@ function EventForm() {
                 name="team"
                 label="Team"
                 defaultValue={
-                  release.event?.extendedProps?.team || "spark video unit"
+                  team || "spark video unit"
                 }
                 required
               >
@@ -196,14 +213,14 @@ function EventForm() {
                 name="release_type"
                 label="Release Type"
                 defaultValue={
-                  release.event?.extendedProps?.release_type || "verification"
+                  releaseType || "verification"
                 }
                 required
               >
                 <MenuItem value="verification">Verification</MenuItem>
                 <MenuItem value="uat">UAT</MenuItem>
                 <MenuItem value="regression">Regression</MenuItem>
-                <MenuItem value="regression">Production</MenuItem>
+                <MenuItem value="production">Production</MenuItem>
               </Select>
             </FormControl>
             <FormControl sx={{ gridArea: "env" }}>
@@ -214,7 +231,7 @@ function EventForm() {
                 name="environment"
                 label="Environment"
                 defaultValue={
-                  release.event?.extendedProps?.environment || "stage"
+                  environment || "stage"
                 }
                 required
               >
@@ -226,7 +243,7 @@ function EventForm() {
               id="build_owner"
               name="build_owner"
               label="Build Owner(s)"
-              defaultValue={release.event?.extendedProps?.build_owner}
+              defaultValue={buildOwners}
               sx={{ gridArea: "owners" }}
               fullWidth
               required
@@ -235,13 +252,21 @@ function EventForm() {
               <DateTimePicker
                 label="Start Date & Time"
                 name="start"
-                defaultValue={dayjs(release.event?.start || release.date)}
+                defaultValue={
+                  start
+                    ? dayjs(start)
+                    : dayjs(release?.date)
+                }
                 sx={{ gridArea: "start" }}
               />
               <DateTimePicker
                 label="End Date & Time"
                 name="end"
-                defaultValue={dayjs(release.event?.end || release.date)}
+                defaultValue={
+                  end
+                    ? dayjs(end)
+                    : dayjs(release?.date).add(1, "hour")
+                }
                 sx={{ gridArea: "end" }}
               />
             </LocalizationProvider>

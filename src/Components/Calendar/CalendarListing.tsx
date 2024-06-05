@@ -1,13 +1,15 @@
 import dayjs from "dayjs";
-import { nameToCode } from "../../_types";
+import { codeToName, nameToCode } from "../../_types";
 import { clsx } from "clsx";
 import { Box } from "@mui/material";
+import { AccessTimeFilledOutlined } from "@mui/icons-material";
 
 const generateFriendlyTime = (startTime: string, endTime: string) => {
-  const start = dayjs(startTime).format("MMM DD HH:mm");
-  const end = dayjs(endTime).format("HH:mm");
+  const isSameDay = dayjs(endTime).isSame(startTime, "day");
+  const start = dayjs(startTime).format("MM/DD h:mma");
+  const end = dayjs(endTime).format(isSameDay ? "h:mma" : "MM/DD h:mma");
 
-  return `${start} to ${end}`;
+  return `${start} - ${end}`;
 };
 
 function CalendarListing({
@@ -21,6 +23,7 @@ function CalendarListing({
     return null;
   }
 
+
   const time = event.timeText || generateFriendlyTime(event.start, event.end);
   const teamCode = event.team || event?.extendedProps?.team;
   const releaseType = event.release_type || event?.extendedProps?.release_type;
@@ -33,16 +36,17 @@ function CalendarListing({
     [`bg--${nameToCode[teamCode]}`]: isToday,
   });
 
-  debugger;
   return (
     <Box className={classes} borderRadius={2} p={1}>
       <h5>
         <span>
-          {teamCode} {releaseType}
+          {codeToName[nameToCode[teamCode]]} {releaseType}
         </span>
         {businessUnits && <> on {businessUnits.toUpperCase()}</>}
       </h5>
-      <Box component="time" display="block">{time}</Box>
+      <Box component="time" display="block">
+        <AccessTimeFilledOutlined fontSize="inherit" /> {time}
+      </Box>
     </Box>
   );
 }
