@@ -12,6 +12,7 @@ import { useTheme } from "@mui/material/styles";
 import Loader from "../Loader/Loader";
 import "./styles.css";
 import { useAppContext } from "../../store";
+import dayjs from "dayjs";
 
 function Calendar() {
   const theme = useTheme();
@@ -66,7 +67,7 @@ function Calendar() {
               addRelease: {
                 text: "Add Release  +",
                 click() {
-                  dispatch({ type: "SET_TENTATIVE_EVENT", value: {} })
+                  dispatch({ type: "SET_TENTATIVE_EVENT", value: {} });
                 },
               },
             }}
@@ -91,16 +92,34 @@ function Calendar() {
             weekends={false}
             events={events}
             initialView="timeGridWeek"
-            dateClick={(event) =>
-              dispatch({ type: "SET_TENTATIVE_EVENT", value: event })
-            }
+            dateClick={(event) => {
+              const now = dayjs();
+              if (dayjs(event.dateStr) < now) {
+                dispatch({
+                  type: "SET_NOTICE",
+                  value: {
+                    type: "error",
+                    content: "Please select a date in the future",
+                  },
+                });
+              } else {
+                dispatch({ type: "SET_TENTATIVE_EVENT", value: event });
+              }
+            }}
             eventContent={CalendarListing}
             datesSet={(currentView) =>
               dispatch({ type: "SET_VIEW", value: currentView?.view?.type })
             }
-            eventClick={(event) =>
-              dispatch({ type: "SET_ACTIVE_EVENT", value: event })
-            }
+            eventClick={(event) => {
+              debugger;
+              dispatch({
+                type: "SET_ACTIVE_EVENT",
+                value: {
+                  ...event,
+                  ...event.event.extendedProps,
+                },
+              });
+            }}
           />
         </Box>
       </Box>

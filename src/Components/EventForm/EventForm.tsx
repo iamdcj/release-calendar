@@ -25,29 +25,31 @@ import { useAppContext } from "../../store";
 import { v4 as uuidv4 } from "uuid";
 
 function EventForm() {
-  const { events, release, theme, dispatch } = useAppContext();
+  const { release, theme, dispatch } = useAppContext();
   const isDarkTheme = theme === "dark";
   const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
     [] as string[]
   );
 
-  const businessUnits = release?.business_units || release?.event?.extendedProps?.business_units
-  const version = release?.version || release?.event?.extendedProps?.version
-  const team = release?.team || release?.event?.extendedProps?.team
-  const releaseType = release?.release_type || release?.event?.extendedProps?.release_type
-  const environment = release?.environment || release?.event?.extendedProps?.environment
-  const buildOwners = release?.build_owners || release?.event?.extendedProps?.build_owners
-  const start = release?.start || release?.event?.start
-  const end = release?.end || release?.event?.end
+  const businessUnits =
+    release?.business_units || release?.event?.extendedProps?.business_units;
+  const version = release?.version || release?.event?.extendedProps?.version;
+  const team = release?.team || release?.event?.extendedProps?.team;
+  const releaseType =
+    release?.release_type || release?.event?.extendedProps?.release_type;
+  const environment =
+    release?.environment || release?.event?.extendedProps?.environment;
+  const buildOwners =
+    release?.build_owners || release?.event?.extendedProps?.build_owners;
+  const start = release?.start || release?.event?.start;
+  const end = release?.end || release?.event?.end;
 
   useEffect(() => {
-    if(!businessUnits) {
+    if (!businessUnits) {
       return;
     }
 
-    setSelectedBusinessUnits(
-      businessUnits.split(",")
-    );
+    setSelectedBusinessUnits(businessUnits.split(","));
   }, []);
 
   if (!release) {
@@ -76,14 +78,12 @@ function EventForm() {
     }
 
     dispatch({
-      type: "SET_EVENTS",
-      value: [
-        ...events,
-        {
-          id: uuidv4(),
-          ...eventData,
-        },
-      ],
+      type: "SET_EVENT",
+      value: {
+        id: uuidv4(),
+        friendlyDate: dayjs(eventData.start).format("MMM D - h:mma"),
+        ...eventData,
+      },
     });
 
     setSelectedBusinessUnits([]);
@@ -155,6 +155,7 @@ function EventForm() {
               fullWidth
               multiple
               id="business_units"
+              disabled={release.readOnly}
               options={businessUnitsArray}
               onChange={(_, values) => {
                 setSelectedBusinessUnits(values);
@@ -181,6 +182,7 @@ function EventForm() {
               name="version"
               label="Fix Version"
               variant="outlined"
+              disabled={release.readOnly}
               defaultValue={version}
               required
               sx={{ gridArea: "version" }}
@@ -192,10 +194,9 @@ function EventForm() {
                 labelId="demo-simple-select-label"
                 id="team"
                 name="team"
+                disabled={release.readOnly}
                 label="Team"
-                defaultValue={
-                  team || "spark video unit"
-                }
+                defaultValue={team || "spark video unit"}
                 required
               >
                 <MenuItem value="spark video unit">Spark Video Unit</MenuItem>
@@ -209,10 +210,9 @@ function EventForm() {
                 labelId="demo-simple-select-label"
                 id="release_type"
                 name="release_type"
+                disabled={release.readOnly}
                 label="Release Type"
-                defaultValue={
-                  releaseType || "verification"
-                }
+                defaultValue={releaseType || "verification"}
                 required
               >
                 <MenuItem value="verification">Verification</MenuItem>
@@ -227,10 +227,9 @@ function EventForm() {
                 labelId="environment"
                 id="environment"
                 name="environment"
+                disabled={release.readOnly}
                 label="Environment"
-                defaultValue={
-                  environment || "stage"
-                }
+                defaultValue={environment || "stage"}
                 required
               >
                 <MenuItem value="stage">Stage</MenuItem>
@@ -241,6 +240,7 @@ function EventForm() {
               id="build_owner"
               name="build_owner"
               label="Build Owner(s)"
+              disabled={release.readOnly}
               defaultValue={buildOwners}
               sx={{ gridArea: "owners" }}
               fullWidth
@@ -250,20 +250,20 @@ function EventForm() {
               <DateTimePicker
                 label="Start Date & Time"
                 name="start"
-                defaultValue={
-                  start
-                    ? dayjs(start)
-                    : dayjs(release?.date)
-                }
+                views={["year", "day", "hours", "minutes"]}
+                disablePast
+                disabled={release.readOnly}
+                defaultValue={start ? dayjs(start) : dayjs(release?.date)}
                 sx={{ gridArea: "start" }}
               />
               <DateTimePicker
                 label="End Date & Time"
+                views={["year", "day", "hours", "minutes"]}
+                disablePast
+                disabled={release.readOnly}
                 name="end"
                 defaultValue={
-                  end
-                    ? dayjs(end)
-                    : dayjs(release?.date).add(4, "hour")
+                  end ? dayjs(end) : dayjs(release?.date).add(4, "hour")
                 }
                 sx={{ gridArea: "end" }}
               />
