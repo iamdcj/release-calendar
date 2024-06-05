@@ -87,12 +87,12 @@
   margin-left: 0;
 }
 
-.fc-event-end .event-content {
+.fc-event-past .event-content {
   color: #8b8b8b!important;
 }
 
 
-.fc-event-end.bg--svu {
+.fc-event-past.bg--svu {
   background-color: rgba(87, 87, 248, 0.5);
 }
 
@@ -100,7 +100,7 @@
   background-color: #5757f8;
 }
 
-.fc-event-end.bg--ptf {
+.fc-event-past.bg--ptf {
   background-color: rgba(67, 173, 179, 0.5);
 }
 
@@ -108,7 +108,7 @@
   background-color: #43adb3;
 }
 
-.fc-event-end.bg--fs {
+.fc-event-past.bg--fs {
   background-color: rgba(249, 94, 94, 0.5);
 }
 
