@@ -29,7 +29,6 @@ function CalendarToolbar() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log(formValues);
   };
 
   return (

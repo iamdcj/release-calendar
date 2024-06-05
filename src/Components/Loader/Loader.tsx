@@ -1,9 +1,8 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import AppContext from "../../store";
-import { useContext } from "react";
+import { useAppContext } from "../../store";
 
 function Loader() {
-  const { isLoading } = useContext(AppContext);
+  const { isLoading } = useAppContext()
 
   return isLoading ? (
     <Backdrop

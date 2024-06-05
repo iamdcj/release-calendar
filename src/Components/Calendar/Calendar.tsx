@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import EventForm from "../EventForm/EventForm";
 import CalendarListing from "./CalendarListing";
 import { Box } from "@mui/material";
-import { nameToCode } from "../../_types";
+import { Event, nameToCode } from "../../_types";
 import CalendarToolbar from "./CalendarToolbar";
 import { useTheme } from "@mui/material/styles";
 import Loader from "../Loader/Loader";
@@ -18,69 +18,27 @@ function Calendar() {
   const { showSidebar, events, dispatch } = useAppContext();
 
   useEffect(() => {
-    const events: any[] = [
-      {
-        id: 4,
-        title: "Release 1.1.5",
-        version: "2.1.5",
-        start: "20240604T12:03:15",
-        end: "20240604T14:00:00",
-        release_type: "regression",
-        team: "Spark Video Unit",
-        components: "V3 Foxipedia External Importer",
-        business_units: "fw",
-        build_owner: "",
-      },
-      {
-        id: 8,
-        title: "Release 2.1.9",
-        version: "2.1.9",
-        start: "20240605T13:03:15",
-        end: "20240605T22:00:00",
-        release_type: "regression",
-        team: "Platform",
-        components: "V3 Foxipedia External Importer",
-        business_units: "fw",
-        build_owner: "",
-      },
-      {
-        id: 5,
-        title: "Release 2.1.5",
-        version: "2.1.5",
-        start: "20240604T22:03:15",
-        end: "20240604T05:00:00",
-        release_type: "regression",
-        team: "Spark Video Unit",
-        components: "V3 Foxipedia External Importer",
-        business_units: "fw",
-        build_owner: "",
-      },
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_API_ENDPOINT as string);
+        const data = await response.json();
+        const events = data.items.map((event: Event) => {
+          const team = nameToCode[event.team] || event.team.toLowerCase();
 
-      {
-        id: 7,
-        title: "Release 2.1.1",
-        version: "2.1.1",
-        start: "20240605T11:03:15",
-        end: "20240606T22:00:00",
-        release_type: "regression",
-        team: "Sports",
-        components: "V3 Foxipedia External Importer",
-        business_units: "fw",
-        build_owner: "",
-      },
-    ].map((event) => {
-      const team = nameToCode[event.team] || event.team.toLowerCase();
+          return {
+            ...event,
+            team,
+          };
+        });
 
-      return {
-        ...event,
-        team,
-      };
-    });
+        dispatch({
+          type: "SET_EVENTS",
+          value: events,
+        });
+      } catch (error) {}
+    };
 
-    dispatch({
-      type: "SET_EVENTS",
-      value: events,
-    });
+    fetchEvents();
   }, []);
 
   return (

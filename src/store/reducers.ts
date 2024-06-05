@@ -15,7 +15,7 @@ export const reducer = (state: any, action: any) => {
         ...state,
         events: action.value,
         release: null,
-        loading: false,
+        isLoading: false,
       };
     case "SET_ACTIVE_EVENT":
       return {

@@ -40,8 +40,6 @@ function EventForm() {
   const start = release?.start || release?.event?.start
   const end = release?.end || release?.event?.end
 
-  debugger
-
   useEffect(() => {
     if(!businessUnits) {
       return;

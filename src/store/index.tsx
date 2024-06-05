@@ -15,7 +15,7 @@ interface State {
 const initialState: State = {
   events: [],
   showSidebar: true,
-  isLoading: false,
+  isLoading: true,
   theme: "light",
   release: null,
   currentView: "timeGridWeek",

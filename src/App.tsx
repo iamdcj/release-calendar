@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import {
   ThemeProvider,
   createTheme,
@@ -10,10 +9,6 @@ import { useAppContext } from "./store";
 
 function App() {
   const { theme } = useAppContext()
-  
-  console.log(theme);
-  
-
   const appTheme = createTheme({
     palette: {
       mode: theme,
