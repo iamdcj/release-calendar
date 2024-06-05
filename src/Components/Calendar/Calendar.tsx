@@ -2,46 +2,94 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useContext, useState } from "react";
+import { useEffect } from "react";
 import EventForm from "../EventForm/EventForm";
 import CalendarListing from "./CalendarListing";
 import { Box } from "@mui/material";
-import { Event, nameToCode } from "../../_types";
+import { nameToCode } from "../../_types";
 import CalendarToolbar from "./CalendarToolbar";
 import { useTheme } from "@mui/material/styles";
 import Loader from "../Loader/Loader";
 import "./styles.css";
-import AppContext from "../../store";
+import { useAppContext } from "../../store";
 
 function Calendar() {
   const theme = useTheme();
-  const { showSidebar, events } = useContext(AppContext);
-  const [tentativeEvent, setTentativeEvent] = useState(null);
-  const [filteredEvents, setFilteredEvents] = useState([] as any);
+  const { showSidebar, events, dispatch } = useAppContext();
 
-  const handleDateClick = (event: any) => {
-    setTentativeEvent(event);
-  };
+  useEffect(() => {
+    const events: any[] = [
+      {
+        id: 4,
+        title: "Release 1.1.5",
+        version: "2.1.5",
+        start: "20240604T12:03:15",
+        end: "20240604T14:00:00",
+        release_type: "regression",
+        team: "Spark Video Unit",
+        components: "V3 Foxipedia External Importer",
+        business_units: "fw",
+        build_owner: "",
+      },
+      {
+        id: 8,
+        title: "Release 2.1.9",
+        version: "2.1.9",
+        start: "20240605T13:03:15",
+        end: "20240605T22:00:00",
+        release_type: "regression",
+        team: "Platform",
+        components: "V3 Foxipedia External Importer",
+        business_units: "fw",
+        build_owner: "",
+      },
+      {
+        id: 5,
+        title: "Release 2.1.5",
+        version: "2.1.5",
+        start: "20240604T22:03:15",
+        end: "20240604T05:00:00",
+        release_type: "regression",
+        team: "Spark Video Unit",
+        components: "V3 Foxipedia External Importer",
+        business_units: "fw",
+        build_owner: "",
+      },
 
-  const handleNewEvent = (event: any) => {
-    setTentativeEvent(null);
-  };
+      {
+        id: 7,
+        title: "Release 2.1.1",
+        version: "2.1.1",
+        start: "20240605T11:03:15",
+        end: "20240606T22:00:00",
+        release_type: "regression",
+        team: "Sports",
+        components: "V3 Foxipedia External Importer",
+        business_units: "fw",
+        build_owner: "",
+      },
+    ].map((event) => {
+      const team = nameToCode[event.team] || event.team.toLowerCase();
 
-  const handleEventClick = (event: any) => {
-    setTentativeEvent(event);
-  };
+      return {
+        ...event,
+        team,
+      };
+    });
+
+    dispatch({
+      type: "SET_EVENTS",
+      value: events,
+    });
+  }, []);
 
   return (
-    <main className={`is--${theme}-theme`}>
+    <main className={`is${theme}theme`}>
       <Loader />
-      <EventForm
-        closeHandler={setTentativeEvent}
-        confirmEvent={handleNewEvent}
-        event={tentativeEvent}
-      />
+      <EventForm />
       <Box
         component="section"
-        className="is--dark-mode"
+        className="isdarkmode"
         display="grid"
         gridTemplateColumns={showSidebar ? "20% 80%" : "100%"}
       >
@@ -65,7 +113,7 @@ function Calendar() {
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             firstDay={1}
             eventClassNames={(event) => [
-              `bg--${nameToCode[event.event.extendedProps.team]}`,
+              `bg${nameToCode[event.event.extendedProps.team]}`,
             ]}
             headerToolbar={{
               left: "today,prev,next",
@@ -74,11 +122,13 @@ function Calendar() {
             }}
             nowIndicator={true}
             weekends={false}
-            events={filteredEvents}
+            events={events}
             initialView="timeGridWeek"
-            dateClick={handleDateClick}
+            dateClick={(event) => dispatch({ type: "SET_TENTATIVE_EVENT", value: event })}
             eventContent={CalendarListing}
-            eventClick={handleEventClick}
+            eventClick={(event) =>
+              dispatch({ type: "SET_ACTIVE_EVENT", value: event })
+            }
           />
         </Box>
       </Box>

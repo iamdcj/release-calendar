@@ -8,10 +8,11 @@ import {
   Switch,
   styled,
 } from "@mui/material";
+import { useAppContext } from "../../store";
 
 function Header() {
-  const theme: any = useTheme();
-  const isDarkMode = theme.palette.mode === "dark";
+  const { showSidebar, theme: appTheme, dispatch } = useAppContext();
+  const isDarkMode = appTheme === "dark";
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
     height: 34,
@@ -84,16 +85,31 @@ function Header() {
           </g>
         </svg>
         <h1>Spark Release Schedule</h1>
-        {/* <IconButton aria-label="view-sidebar">
-          {showSidebar ? <WidthFullIcon /> : <ViewSidebar />}
-        </IconButton> */}
+        {!showSidebar && (
+          <IconButton
+            aria-label="view-sidebar"
+            onClick={() =>
+              dispatch({
+                type: "SHOW_SIDEBAR",
+                value: true,
+              })
+            }
+          >
+            <ViewSidebar />
+          </IconButton>
+        )}
       </Box>
       <FormControlLabel
         control={
           <MaterialUISwitch
             sx={{ m: 1 }}
             checked={isDarkMode}
-            // onChange={() => setTheme(isDarkMode ? "light" : "dark")}
+            onChange={() =>
+              dispatch({
+                type: "SET_THEME",
+                value: isDarkMode ? "light" : "dark",
+              })
+            }
           />
         }
         label={`${isDarkMode ? "Dark" : "Light"} Mode`}

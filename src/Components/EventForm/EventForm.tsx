@@ -10,7 +10,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  useTheme,
 } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import {
@@ -20,25 +19,23 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BusinessUnits, businessUnitsArray } from "../../_types";
+import { useAppContext } from "../../store";
+import { v4 as uuidv4 } from "uuid";
 
-function EventForm({
-  event,
-  closeHandler,
-  confirmEvent,
-}: {
-  event: any;
-  closeHandler: any;
-  confirmEvent: any;
-}) {
+function EventForm() {
+  const { events, release, theme, dispatch } = useAppContext();
+  const isDarkTheme = theme === "dark";
+  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState([] as string[]);
 
-  const isDarkTheme = useTheme().palette.mode === "dark";
-  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
-    event?.event?.extendedProps?.business_units.split(",") || ([] as string[])
-  );
+  useEffect(() => {
+    setSelectedBusinessUnits(
+      release?.event?.extendedProps?.business_units.split(",")
+    );
+  }, []);
 
-  if (!event) {
+  if (!release) {
     return null;
   }
 
@@ -60,20 +57,34 @@ function EventForm({
       eventData[key] = value;
     }
 
-    confirmEvent(eventData);
+    dispatch({
+      type: "SET_EVENTS",
+      value: [
+        ...events,
+        {
+          id: uuidv4(),
+         ...eventData,
+        },
+      ],
+    });
+    setSelectedBusinessUnits([]);
   };
+
+  const closeHandler = () => {
+    dispatch({ type: "CLEAR_EVENT" });
+  }
 
   return (
     <Modal
-      isOpen={event}
-      onRequestClose={() => closeHandler(null)}
+      isOpen={release ? true : false}
+      onRequestClose={closeHandler}
       contentLabel="Example Modal"
       className="modal"
       overlayClassName="wrapper"
     >
       <IconButton
         aria-label="delete"
-        onClick={() => closeHandler(null)}
+        onClick={closeHandler}
         sx={{
           position: "absolute",
           right: "20px",
@@ -127,8 +138,6 @@ function EventForm({
               id="business_units"
               options={businessUnitsArray}
               onChange={(_, values) => {
-                console.log(values);
-
                 setSelectedBusinessUnits(values);
               }}
               getOptionLabel={(option) => BusinessUnits[option]}
@@ -145,7 +154,7 @@ function EventForm({
                     name="business_units"
                     variant="outlined"
                     label="Business Units"
-                    required={!selectedBusinessUnits.length}
+                    required={!selectedBusinessUnits?.length}
                     fullWidth
                   />
                 );
@@ -157,7 +166,7 @@ function EventForm({
               name="version"
               label="Fix Version"
               variant="outlined"
-              defaultValue={event.event?.extendedProps?.version}
+              defaultValue={release.event?.extendedProps?.version}
               required
               sx={{ gridArea: "version" }}
               fullWidth
@@ -170,7 +179,7 @@ function EventForm({
                 name="team"
                 label="Team"
                 defaultValue={
-                  event.event?.extendedProps?.team || "spark video unit"
+                  release.event?.extendedProps?.team || "spark video unit"
                 }
                 required
               >
@@ -187,7 +196,7 @@ function EventForm({
                 name="release_type"
                 label="Release Type"
                 defaultValue={
-                  event.event?.extendedProps?.release_type || "verification"
+                  release.event?.extendedProps?.release_type || "verification"
                 }
                 required
               >
@@ -205,7 +214,7 @@ function EventForm({
                 name="environment"
                 label="Environment"
                 defaultValue={
-                  event.event?.extendedProps?.environment || "stage"
+                  release.event?.extendedProps?.environment || "stage"
                 }
                 required
               >
@@ -217,7 +226,7 @@ function EventForm({
               id="build_owner"
               name="build_owner"
               label="Build Owner(s)"
-              defaultValue={event.event?.extendedProps?.build_owner}
+              defaultValue={release.event?.extendedProps?.build_owner}
               sx={{ gridArea: "owners" }}
               fullWidth
               required
@@ -226,13 +235,13 @@ function EventForm({
               <DateTimePicker
                 label="Start Date & Time"
                 name="start"
-                defaultValue={dayjs(event.event?.start || event.date)}
+                defaultValue={dayjs(release.event?.start || release.date)}
                 sx={{ gridArea: "start" }}
               />
               <DateTimePicker
                 label="End Date & Time"
                 name="end"
-                defaultValue={dayjs(event.event?.end || event.date)}
+                defaultValue={dayjs(release.event?.end || release.date)}
                 sx={{ gridArea: "end" }}
               />
             </LocalizationProvider>
@@ -246,11 +255,7 @@ function EventForm({
               justifyContent: "space-between",
             }}
           >
-            <Button
-              color="error"
-              variant="outlined"
-              onClick={() => closeHandler(null)}
-            >
+            <Button color="error" variant="outlined" onClick={closeHandler}>
               <Close /> Cancel
             </Button>
             <Button type="submit" variant="outlined">

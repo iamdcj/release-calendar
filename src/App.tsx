@@ -6,10 +6,13 @@ import {
 import CssBaseline from "@mui/material/CssBaseline";
 import Calendar from "./Components/Calendar/Calendar";
 import Header from "./Components/Header/Header";
-import AppContext from "./store";
+import { useAppContext } from "./store";
 
 function App() {
-  const { theme } = useContext(AppContext);
+  const { theme } = useAppContext()
+  
+  console.log(theme);
+  
 
   const appTheme = createTheme({
     palette: {

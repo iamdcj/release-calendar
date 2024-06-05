@@ -1,18 +1,20 @@
-import { Autocomplete, Box, Button, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import { BusinessUnits, businessUnitsArray } from "../../_types";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarListing from "./CalendarListing";
 import dayjs from "dayjs";
 import isToday from "dayjs/plugin/isToday";
-import { Check } from "@mui/icons-material";
-import AppContext from "../../store";
+import { Check, ChevronLeft } from "@mui/icons-material";
+import { useAppContext } from "../../store";
 
-function CalendarToolbar({
-  handleFilter,
-}: {
-  handleFilter: (key: string, value: any) => void;
-}) {
-  const { showSidebar, events } = useContext(AppContext);
+function CalendarToolbar() {
+  const { showSidebar, events, dispatch } = useAppContext();
   const [formValues, setFormValues] = useState({} as any);
   const [todaysEvents, setTodaysEvents] = useState([]);
 
@@ -58,7 +60,23 @@ function CalendarToolbar({
         component="form"
         onSubmit={handleSubmit}
       >
-        <h3>Filters</h3>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <h3>Filters</h3>
+
+          {showSidebar && (
+            <IconButton
+              aria-label="view-sidebar"
+              onClick={() =>
+                dispatch({
+                  type: "SHOW_SIDEBAR",
+                  value: false,
+                })
+              }
+            >
+              <ChevronLeft />
+            </IconButton>
+          )}
+        </Box>
         <Autocomplete
           fullWidth
           multiple
