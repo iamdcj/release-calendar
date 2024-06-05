@@ -263,7 +263,7 @@ function EventForm() {
                 defaultValue={
                   end
                     ? dayjs(end)
-                    : dayjs(release?.date).add(1, "hour")
+                    : dayjs(release?.date).add(4, "hour")
                 }
                 sx={{ gridArea: "end" }}
               />

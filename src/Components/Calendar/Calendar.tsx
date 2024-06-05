@@ -20,7 +20,9 @@ function Calendar() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_ENDPOINT as string);
+        const response = await fetch(
+          process.env.REACT_APP_API_ENDPOINT as string
+        );
         const data = await response.json();
         const events = data.items.map((event: Event) => {
           const team = nameToCode[event.team] || event.team.toLowerCase();
@@ -54,12 +56,19 @@ function Calendar() {
         <CalendarToolbar />
         <Box px={3} pt={2}>
           <FullCalendar
-            themeSystem="bootstrap5"
             allDaySlot={false}
             eventTimeFormat={{
               hour: "numeric",
               minute: "2-digit",
               meridiem: "short",
+            }}
+            customButtons={{
+              addRelease: {
+                text: "Add Release  +",
+                click() {
+                  dispatch({ type: "SET_TENTATIVE_EVENT", value: {} })
+                },
+              },
             }}
             slotMinTime="08:00:00"
             slotMaxTime="19:00:00"
@@ -75,7 +84,7 @@ function Calendar() {
             ]}
             headerToolbar={{
               left: "today,prev,next",
-              center: "title",
+              center: "title,addRelease",
               right: "timeGridWeek,dayGridMonth,timeGridDay",
             }}
             nowIndicator={true}

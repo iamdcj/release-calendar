@@ -14,15 +14,14 @@ const generateFriendlyTime = (startTime: string, endTime: string) => {
 
 function CalendarListing({
   event,
-  isToday = false,
+  isTodayListing = false,
 }: {
   event: any;
-  isToday: boolean;
+  isTodayListing: boolean;
 }) {
   if (!event) {
     return null;
   }
-
 
   const time = event.timeText || generateFriendlyTime(event.start, event.end);
   const teamCode = event.team || event?.extendedProps?.team;
@@ -33,19 +32,29 @@ function CalendarListing({
 
   const classes = clsx({
     "event-content ": true,
-    [`bg--${nameToCode[teamCode]}`]: isToday,
+    [`bg--${nameToCode[teamCode]}`]: isTodayListing,
   });
 
   return (
-    <Box className={classes} borderRadius={2} p={1}>
-      <h5>
-        <span>
-          {codeToName[nameToCode[teamCode]]} {releaseType}
-        </span>
+    <Box
+      flexDirection="column"
+      alignItems="start"
+      textAlign="left"
+      className={classes}
+      borderRadius={2}
+      p={1}
+    >
+      <Box component="h5" fontWeight={600} mb={0.5}>
+        {isTodayListing && (
+          <Box mb={0.5}>
+            {codeToName[nameToCode[teamCode]]} {event.title}
+          </Box>
+        )}
+        <span>{releaseType}</span>
         {businessUnits && <> on {businessUnits.toUpperCase()}</>}
-      </h5>
-      <Box component="time" display="block">
-        <AccessTimeFilledOutlined fontSize="inherit" /> {time}
+      </Box>
+      <Box component="time" display="inline-flex" alignItems="center">
+        {/* <AccessTimeFilledOutlined fontSize="inherit" />*/} {time} 
       </Box>
     </Box>
   );

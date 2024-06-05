@@ -142,7 +142,7 @@ function CalendarToolbar() {
             );
           }}
         />
-        <Button type="submit" variant="contained" color="success">
+        <Button type="submit" variant="outlined" color="success">
           Apply Filters <Check />
         </Button>
       </Box>
@@ -165,7 +165,7 @@ function CalendarToolbar() {
             })
             .map((event: any) => (
               <button onClick={() => dispatch({ type: 'SET_ACTIVE_EVENT', value: event})}>
-                <CalendarListing key={event.id} event={event} isToday />
+                <CalendarListing key={event.id} event={event} isTodayListing />
               </button>
             ))
         ) : (
