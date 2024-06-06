@@ -110,12 +110,14 @@ function Calendar() {
             datesSet={(currentView) =>
               dispatch({ type: "SET_VIEW", value: currentView?.view?.type })
             }
-            eventClick={(event) => {
-              debugger;
+            eventClick={(event: any) => {
               dispatch({
                 type: "SET_ACTIVE_EVENT",
                 value: {
-                  ...event,
+                 id: event.event.id,
+                 title: event.event.title,
+                 start: event.event.start,
+                 end: event.event.end,
                   ...event.event.extendedProps,
                 },
               });

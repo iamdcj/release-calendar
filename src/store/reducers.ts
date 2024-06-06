@@ -13,17 +13,17 @@ export const reducer = (state: any, action: any) => {
         theme: action.value,
       };
     case "SET_EVENT":
-        return {
-          ...state,
-          events: [...state.events, action.value],
-          release: null,
-          isLoading: false,
-          notice: {
-            isVisible: true,
-            type: 'success',
-            content: `${action.value.version} has been scheduled for ${action.value.release_type} on ${action.value.friendlyDate}`
-          }
-        };
+      return {
+        ...state,
+        events: [...state.events, action.value],
+        release: null,
+        isLoading: false,
+        notice: {
+          isVisible: true,
+          type: "success",
+          content: `${action.value.version} has been scheduled for ${action.value.release_type} on ${action.value.friendlyDate}`,
+        },
+      };
     case "SET_EVENTS":
       return {
         ...state,
@@ -34,8 +34,18 @@ export const reducer = (state: any, action: any) => {
     case "SET_ACTIVE_EVENT":
       return {
         ...state,
-        release: action.value,
-        readOnly: true,
+        release: {
+          ...action.value,
+          readOnly: true,
+        },
+      };
+    case "EDIT_EVENT":
+      return {
+        ...state,
+        release: {
+          ...state.release,
+          readOnly: false,
+        },
       };
     case "SET_TENTATIVE_EVENT":
       return {

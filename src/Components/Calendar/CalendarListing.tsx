@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import { codeToName, nameToCode } from "../../_types";
 import { clsx } from "clsx";
 import { Box } from "@mui/material";
-import { AccessTimeFilledOutlined } from "@mui/icons-material";
 
 const generateFriendlyTime = (startTime: string, endTime: string) => {
   const isSameDay = dayjs(endTime).isSame(startTime, "day");

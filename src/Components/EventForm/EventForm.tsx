@@ -11,7 +11,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Check, Close } from "@mui/icons-material";
+import { Check, Close, Edit, EventBusyOutlined } from "@mui/icons-material";
 import {
   CalendarIcon,
   DateTimePicker,
@@ -25,7 +25,7 @@ import { useAppContext } from "../../store";
 import { v4 as uuidv4 } from "uuid";
 
 function EventForm() {
-  const { release, theme, dispatch } = useAppContext();
+  const { release, events, theme, dispatch } = useAppContext();
   const isDarkTheme = theme === "dark";
   const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
     [] as string[]
@@ -59,6 +59,19 @@ function EventForm() {
   const onSubmit = (event: any) => {
     event.preventDefault();
 
+    if (release.id) {
+      const filteredEvents = events.filter(
+        ({ id }: { id: number }) => id !== release.id
+      );
+
+      debugger
+      dispatch({
+        type: "SET_EVENTS",
+        value: filteredEvents
+      });
+
+    }
+
     const data = new FormData(event.target);
     const eventData: any = {};
 
@@ -87,6 +100,17 @@ function EventForm() {
     });
 
     setSelectedBusinessUnits([]);
+  };
+
+  const handleCancelRelease = () => {
+    const filteredEvents = events.filter(
+      ({ id }: { id: number }) => id !== release.id
+    );
+
+    dispatch({
+      type: "SET_EVENTS",
+      value: filteredEvents
+    });
   };
 
   const closeHandler = () => {
@@ -237,8 +261,8 @@ function EventForm() {
               </Select>
             </FormControl>
             <TextField
-              id="build_owner"
-              name="build_owner"
+              id="build_owners"
+              name="build_owners"
               label="Build Owner(s)"
               disabled={release.readOnly}
               defaultValue={buildOwners}
@@ -278,12 +302,32 @@ function EventForm() {
               justifyContent: "space-between",
             }}
           >
-            <Button color="error" variant="outlined" onClick={closeHandler}>
-              <Close /> Cancel
-            </Button>
-            <Button type="submit" variant="outlined">
-              Confirm <Check />
-            </Button>
+            {release.readOnly ? (
+              <>
+                <Button
+                  color="error"
+                  variant="outlined"
+                  onClick={handleCancelRelease}
+                >
+                  <EventBusyOutlined sx={{ mr: 1 }} /> Cancel Release
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => dispatch({ type: "EDIT_EVENT" })}
+                >
+                  Edit <Edit />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button color="error" variant="outlined" onClick={closeHandler}>
+                  <Close /> Cancel
+                </Button>
+                <Button type="submit" variant="outlined">
+                  Confirm <Check />
+                </Button>
+              </>
+            )}
           </Box>
         </Box>
       </div>
