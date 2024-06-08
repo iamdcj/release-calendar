@@ -1,5 +1,3 @@
-import { isVisible } from "@testing-library/user-event/dist/utils";
-
 export const reducer = (state: any, action: any) => {
   switch (action.type) {
     case "SHOW_SIDEBAR":
@@ -47,6 +45,22 @@ export const reducer = (state: any, action: any) => {
           readOnly: false,
         },
       };
+      case "CANCEL_EVENT":
+        const filteredEvents = state.events.filter(
+          ({ id }: { id: number }) => id !== action.value.id
+        );
+
+        return {
+          ...state,
+          events: filteredEvents,
+          release: null,
+          notice: {
+            isVisible: true,
+            type: "error",
+            content: `${action.value.team} ${action.value.title} has been removed from the release schedule`,
+          },
+        };
+
     case "SET_TENTATIVE_EVENT":
       return {
         ...state,

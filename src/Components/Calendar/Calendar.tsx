@@ -18,29 +18,29 @@ function Calendar() {
   const theme = useTheme();
   const { showSidebar, events, dispatch } = useAppContext();
 
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_API_ENDPOINT as string
+      );
+      const data = await response.json();
+      const events = data.items.map((event: Event) => {
+        const team = nameToCode[event.team] || event.team.toLowerCase();
+
+        return {
+          ...event,
+          team,
+        };
+      });
+
+      dispatch({
+        type: "SET_EVENTS",
+        value: events,
+      });
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(
-          process.env.REACT_APP_API_ENDPOINT as string
-        );
-        const data = await response.json();
-        const events = data.items.map((event: Event) => {
-          const team = nameToCode[event.team] || event.team.toLowerCase();
-
-          return {
-            ...event,
-            team,
-          };
-        });
-
-        dispatch({
-          type: "SET_EVENTS",
-          value: events,
-        });
-      } catch (error) {}
-    };
-
     fetchEvents();
   }, []);
 

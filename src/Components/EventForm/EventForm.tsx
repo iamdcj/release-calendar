@@ -26,6 +26,7 @@ import { v4 as uuidv4 } from "uuid";
 
 function EventForm() {
   const { release, events, theme, dispatch } = useAppContext();
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const isDarkTheme = theme === "dark";
   const [selectedBusinessUnits, setSelectedBusinessUnits] = useState(
     [] as string[]
@@ -52,6 +53,16 @@ function EventForm() {
     setSelectedBusinessUnits(businessUnits.split(","));
   }, []);
 
+  useEffect(() => {
+    if (!showDeleteWarning) {
+      return;
+    }
+
+    setTimeout(() => {
+      setShowDeleteWarning(false);
+    }, 10000);
+  }, [showDeleteWarning]);
+
   if (!release) {
     return null;
   }
@@ -64,12 +75,11 @@ function EventForm() {
         ({ id }: { id: number }) => id !== release.id
       );
 
-      debugger
+      debugger;
       dispatch({
         type: "SET_EVENTS",
-        value: filteredEvents
+        value: filteredEvents,
       });
-
     }
 
     const data = new FormData(event.target);
@@ -103,17 +113,18 @@ function EventForm() {
   };
 
   const handleCancelRelease = () => {
-    const filteredEvents = events.filter(
-      ({ id }: { id: number }) => id !== release.id
-    );
-
-    dispatch({
-      type: "SET_EVENTS",
-      value: filteredEvents
-    });
+    if (!showDeleteWarning) {
+      setShowDeleteWarning(true);
+    } else {
+      dispatch({
+        type: "CANCEL_EVENT",
+        value: release,
+      });
+    }
   };
 
   const closeHandler = () => {
+    setShowDeleteWarning(false);
     dispatch({ type: "CLEAR_EVENT" });
   };
 
@@ -306,10 +317,19 @@ function EventForm() {
               <>
                 <Button
                   color="error"
-                  variant="outlined"
+                  variant={showDeleteWarning ? "contained" : "outlined"}
                   onClick={handleCancelRelease}
                 >
-                  <EventBusyOutlined sx={{ mr: 1 }} /> Cancel Release
+                  {!showDeleteWarning ? (
+                    <>
+                      <EventBusyOutlined sx={{ mr: 1 }} />
+                      Cancel Release
+                    </>
+                  ) : (
+                    <>
+                      Are you sure? <Check />
+                    </>
+                  )}
                 </Button>
                 <Button
                   variant="outlined"
